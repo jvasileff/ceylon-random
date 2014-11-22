@@ -20,28 +20,28 @@
 
     <target name="compile" depends="ceylon-ant-taskdefs">
         <ceylon-compile encoding="${source.encoding}">
-            <module name="com.vasileff.ceylon.random"/>
+            <module name="com.vasileff.ceylon.random.api"/>
         </ceylon-compile>
     </target>
 
     <target name="compile-js" depends="ceylon-ant-taskdefs">
         <ceylon-compile-js encoding="${source.encoding}">
-            <module name="com.vasileff.ceylon.random"/>
+            <module name="com.vasileff.ceylon.random.api"/>
         </ceylon-compile-js>
     </target>
 
     <target name="doc" depends="ceylon-ant-taskdefs">
         <ceylon-doc encoding="${source.encoding}">
-            <module name="com.vasileff.ceylon.random"/>
+            <module name="com.vasileff.ceylon.random.api"/>
         </ceylon-doc>
     </target>
 
     <target name="run" depends="compile">
-        <ceylon-run module="com.vasileff.ceylon.random/0.0.1"/>
+        <ceylon-run module="com.vasileff.ceylon.random.api/0.0.1"/>
     </target>
 
     <target name="run-js" depends="compile-js">
-        <ceylon-run-js module="com.vasileff.ceylon.random/0.0.1"/>
+        <ceylon-run-js module="com.vasileff.ceylon.random.api/0.0.1"/>
     </target>
 
     <target name="clean">
