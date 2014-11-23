@@ -15,7 +15,7 @@ import com.vasileff.ceylon.random.api {
  "
 shared final class LCGRandom (
   "The seed"
-  Integer seed = system.nanoseconds)
+  Integer seed = system.nanoseconds + system.milliseconds)
     satisfies Random {
 
   if (runtime.maxIntegerValue < 2^48) {
@@ -29,14 +29,14 @@ shared final class LCGRandom (
   value m64 = m - 1;
 
   // initialized later by reseed(seed)
-  variable Integer xn = 0;
+  late variable Integer xn;
 
   shared void reseed(Integer newSeed) {
     if (realInts) {
       xn = newSeed.xor(a).and(m64);
     } else {
-      // TODO: do somthing else?
-      xn = newSeed.negative then -newSeed else newSeed;
+      // TODO: good enough?
+      xn = newSeed.magnitude % m;
     }
   }
 
@@ -64,7 +64,6 @@ shared final class LCGRandom (
     if (realInts) {
       return xn = (a * xn + c).and(m64);
     } else {
-      // TODO: review/test
       // x % 2^n == x & (2^n - 1) for x >= 0
       value step1 = a * xn + c;
       assert(!step1.negative);
