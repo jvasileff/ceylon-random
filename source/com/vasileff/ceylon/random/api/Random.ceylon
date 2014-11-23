@@ -1,3 +1,4 @@
+// FIXME cannot use shift w/javascript
 Float floatUnit = 1.0 / 1.leftLogicalShift(53);
 shared interface Random {
 
@@ -11,10 +12,10 @@ shared interface Random {
       }
       else if (bound.and(bound - 1) == 0) {
         // exact power of two
-        return nextBits(bitLengthInteger(bound) - 1);
+        return nextBits(bitLength(bound) - 1);
       }
       else {
-        value bits = bitLengthInteger(bound);
+        value bits = bitLength(bound);
         while (true) {
           value candidate = nextBits(bits);
           if (candidate < bound) {
@@ -35,16 +36,16 @@ shared interface Random {
       => nextBits(8).byte;
 
   shared default Float nextFloat()
-      => (nextBits(26).leftLogicalShift(27) + nextBits(27)).float * floatUnit;
+      => nextBits(53).float * floatUnit;
 }
 
-Integer bitLengthInteger(variable Integer x) {
-  // work within 53 bits for JavaScript & Java VMs
-  assert(x >= 0 && x <= runtime.maxIntegerValue);
-  variable value bits = 0;
-  while (x > 0) {
-    bits++;
-    x = x.rightLogicalShift(1);
+Integer bitLength(variable Integer number) {
+  // avoid right shift on JS, only works for 32 bit numbers
+  assert(number >= 0 && number <= runtime.maxIntegerValue);
+  variable value numBits = 0;
+  while (number > 0) {
+    numBits++;
+    number /= 2;
   }
-  return bits;
+  return numBits;
 }
