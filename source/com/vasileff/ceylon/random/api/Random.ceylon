@@ -11,17 +11,14 @@ shared interface Random {
           "bound must be a positive value less than runtime.maxIntegerValue");
       }
       else if (bound.and(bound - 1) == 0) {
-        // exact power of two
+        // bound is an exact power of two
         return nextBits(bitLength(bound) - 1);
       }
       else {
-        value bits = bitLength(bound);
-        while (true) {
-          value candidate = nextBits(bits);
-          if (candidate < bound) {
-            return candidate;
-          }
-        }
+        variable Integer result;
+        value numBits = bitLength(bound);
+        while ((result = nextBits(numBits)) >= bound) { }
+        return result;
       }
     }
     else {
