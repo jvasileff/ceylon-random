@@ -6,14 +6,21 @@ import java.util {
   JRandom=Random
 }
 
-shared class JavaRandom(Integer? seed = null) satisfies Random {
+"A pseudorandom number generator backed by `java.util.Random`."
+by("John Vasileff")
+shared final class JavaRandom(
+    "The seed, if provided, will be used to construct the wrapped `java.util.Random`."
+    Integer? seed = null)
+    satisfies Random {
 
-  value javaRNG = JRandom();
-
+  JRandom javaRNG;
   if (exists seed) {
-    javaRNG.setSeed(seed);
+    javaRNG = JRandom(seed);
+  } else {
+    javaRNG = JRandom();
   }
 
+  "Delegates to `java.util.Random.setSeed(long)`."
   shared void reseed(Integer newSeed) {
     javaRNG.setSeed(newSeed);
   }

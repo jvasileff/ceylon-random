@@ -1,8 +1,20 @@
+"An interface for random number generators. Satisfying classes must implement
+ [[nextBits]], which is used by the default implementaitons of the methods of this
+ interface."
+by("John Vasileff")
 shared interface Random {
-  // TODO: document restriction to bit length equiv for maxIntegerValue
+  "Generates an Integer holding `numBits` pseudorandom bits. This method returns
+   `0` for `numBits <= 0`."
+  throws (`class Exception`, "if [[numBits]] is greater than [[randomLimits.maxBits]].")
   shared formal Integer nextBits(Integer numBits);
 
-  shared default Integer nextInteger(Integer bound) {
+  "Returns the next pseudorandom `Integer` between `0` (inclusive)
+   and [[bound]] (exclusive)."
+  throws (`class Exception`,
+          "if [[bound]] is less than `1` or greater than `randomLimits.maxIntegerBound`")
+  shared default Integer nextInteger(
+      "The upper bound (exclusive)."
+      Integer bound) {
     if (bound < 1 || bound > randomLimits.maxIntegerBound) {
       throw Exception(
         "bound must be a positive value less than runtime.maxIntegerValue");
@@ -19,12 +31,15 @@ shared interface Random {
     }
   }
 
+  "Returns the next pseudorandom `Boolean`."
   shared default Boolean nextBoolean()
       => nextBits(1) == 1;
 
+  "Returns the next pseudorandom `Byte`."
   shared default Byte nextByte()
       => nextBits(8).byte;
 
+  "Returns the next pseudorandom `Float` between `0.0` and `1.0`."
   shared default Float nextFloat()
       => nextBits(53).float * floatUnit;
 }

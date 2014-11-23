@@ -9,7 +9,16 @@ import com.vasileff.ceylon.random.api {
   Random
 }
 
-shared Whole randomWhole(Random rng, Whole origin, Whole bound) {
+"Generate a pseudorandom [[ceylon.math.whole::Whole]] number in the range `origin`
+ (inclusive) to `bound` (exclusive)."
+throws (`class Exception`, "if origin <= bound")
+shared Whole randomWhole(
+      "The entropy source."
+      Random random,
+      "The lower bound, inclusive. May be negative."
+      Whole origin,
+      "The upper bound, exclusive. Must be greater than `origin`."
+      Whole bound) {
   value magnitude = bound - origin - one;
 
   if (magnitude.negative) {
@@ -21,7 +30,7 @@ shared Whole randomWhole(Random rng, Whole origin, Whole bound) {
   else {
     value numBits = bitLength(magnitude);
     variable Whole x;
-    while ((x = randomWholeBits(rng, numBits)) > magnitude) { }
+    while ((x = randomWholeBits(random, numBits)) > magnitude) { }
     return x - origin;
   }
 }
