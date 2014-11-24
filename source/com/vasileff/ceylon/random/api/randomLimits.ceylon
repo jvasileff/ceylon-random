@@ -1,15 +1,28 @@
 "Provides limits relevant to generating random numbers on the current runtime."
 by ("John Vasileff")
 shared object randomLimits {
-  // FIXME maxIntegerBound should be 2^(maxBits+1) - 1, so they are in sync.
-  "The largest value that may be used as an argument to [[Random.nextInteger]]."
-  shared Integer maxIntegerBound = runtime.maxIntegerValue;
+
+  "The largest value that may be used as an argument to [[Random.nextInteger]].
+   `maxIntegerBound` is the lesser of:
+
+   1. [[runtime.maxIntegerValue]], and
+
+   1. 2<sup>n</sup>-1, where n = [[maxBits]].
+
+   On both the Java and JavaScript runtimes, `maxIntegerBound` is equal
+   to [[runtime.maxIntegerValue]]."
+  shared Integer maxIntegerBound;// = runtime.maxIntegerValue;
 
   "The largest value that may be used as an argument to [[Random.nextBits]]. `maxBits`
-   will be the number of bits required to represent [[maxIntegerBound]], if the value
+   is the greater of:
+
+   1. [[runtime.integerAddressableSize]], and
+
+   1. The number of bits required to represent [[runtime.maxIntegerValue]] if the value
    of `maxIntegerBound` can be represented by 2<sup>n</sup>-1 for some `n`. Otherwise,
-   `maxBits` will be one less than the number of bits required to represent
-   `maxIntegerBound`. `maxBits` is `63` for the Java runtime and `53` for the
+   one less than the number of bits required to represent [[runtime.maxIntegerValue]].
+
+   `maxBits` is `64` for the Java runtime and `53` for the
    JavaScript runtime."
   shared Integer maxBits;
 
@@ -25,5 +38,10 @@ shared object randomLimits {
   if ((2^numBits-1) > runtime.maxIntegerValue) {
     numBits--;
   }
-  maxBits = numBits;
+  maxBits = largest(numBits, runtime.integerAddressableSize);
+
+  // calculate maxIntegerBound
+  maxIntegerBound = smallest(runtime.maxIntegerValue,
+                             2^smallest(63, maxBits) - 1);
+
 }

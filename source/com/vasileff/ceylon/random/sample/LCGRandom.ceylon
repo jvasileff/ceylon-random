@@ -1,4 +1,4 @@
-  import com.vasileff.ceylon.random.api {
+import com.vasileff.ceylon.random.api {
   Random,
   randomLimits
 }
@@ -55,7 +55,7 @@ shared final class LCGRandom (
    `numBits <= 0`."
   throws (`class Exception`, "if [[numBits]] is greater than [[randomLimits.maxBits]].")
   shared actual Integer nextBits(
-      "The number of random bits to generate. Must be <=
+      "The number of random bits to generate. Must not be greater than
        [[com.vasileff.ceylon.random.api::randomLimits.maxBits]]"
       Integer numBits) {
 
@@ -88,5 +88,5 @@ shared final class LCGRandom (
   }
 }
 
-// true for Java (64 bit bitwise operators supported)
+// true for Java (64 bit bitwise operations supported)
 Boolean realInts = runtime.integerAddressableSize == 64;
