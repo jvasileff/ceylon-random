@@ -1,0 +1,51 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>randomWhole.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.math.whole {
+  Whole,
+  one,
+  zero,
+  two
+}
+
+import com.vasileff.ceylon.random.api {
+  Random
+}
+
+&quot;Generate a pseudorandom [[ceylon.math.whole::Whole]] number in the range `origin`
+ (inclusive) to `bound` (exclusive).&quot;
+throws (`class Exception`, &quot;if origin &lt;= bound&quot;)
+shared Whole randomWhole(
+      &quot;The entropy source.&quot;
+      Random random,
+      &quot;The lower bound, inclusive. May be negative.&quot;
+      Whole origin,
+      &quot;The upper bound, exclusive. Must be greater than `origin`.&quot;
+      Whole bound) {
+  value magnitude = bound - origin - one;
+
+  if (magnitude.negative) {
+    throw Exception(&quot;origin must be less than bound&quot;);
+  }
+  else if (magnitude.zero) {
+    return origin;
+  }
+  else {
+    value numBits = bitLength(magnitude);
+    variable Whole x;
+    while ((x = randomWholeBits(random, numBits)) &gt; magnitude) { }
+    return x - origin;
+  }
+}
+
+Integer bitLength(variable Whole number) {
+  assert(!number.negative);
+  variable value numBits = 0;
+  while (number &gt; zero) {
+    numBits++;
+    number /= two;
+  }
+  return numBits;
+}
+</pre></body></html>

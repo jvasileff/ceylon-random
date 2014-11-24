@@ -1,0 +1,45 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>JavaRandom.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import com.vasileff.ceylon.random.api {
+  Random
+}
+
+import java.util {
+  JRandom=Random
+}
+
+&quot;A pseudorandom number generator backed by `java.util.Random`.&quot;
+by(&quot;John Vasileff&quot;)
+shared final class JavaRandom(
+    &quot;The seed, if provided, will be used to construct the wrapped `java.util.Random`.&quot;
+    Integer? seed = null)
+    satisfies Random {
+
+  JRandom javaRNG;
+  if (exists seed) {
+    javaRNG = JRandom(seed);
+  } else {
+    javaRNG = JRandom();
+  }
+
+  &quot;Delegates to `java.util.Random.setSeed(long)`.&quot;
+  shared void reseed(Integer newSeed) {
+    javaRNG.setSeed(newSeed);
+  }
+
+  shared actual Integer nextBits(Integer numBits) {
+    if (numBits == 0) {
+      return 0;
+    }
+    else if (numBits &lt; 31) {
+      return javaRNG.nextInt(2 ^ numBits);
+    }
+    else {
+      return javaRNG.nextLong().rightLogicalShift(64 - numBits);
+    }
+  }
+
+}
+</pre></body></html>

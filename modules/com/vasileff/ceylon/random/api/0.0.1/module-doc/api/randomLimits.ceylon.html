@@ -1,0 +1,52 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>randomLimits.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;Provides limits relevant to generating random numbers on the current runtime.&quot;
+by (&quot;John Vasileff&quot;)
+shared object randomLimits {
+
+  &quot;The largest value that may be used as an argument to [[Random.nextInteger]].
+   `maxIntegerBound` is the lesser of:
+
+   1. [[runtime.maxIntegerValue]], and
+
+   1. 2&lt;sup&gt;n&lt;/sup&gt;-1, where n = [[maxBits]].
+
+   On both the Java and JavaScript runtimes, `maxIntegerBound` is equal
+   to [[runtime.maxIntegerValue]].&quot;
+  shared Integer maxIntegerBound;// = runtime.maxIntegerValue;
+
+  &quot;The largest value that may be used as an argument to [[Random.nextBits]]. `maxBits`
+   is the greater of:
+
+   1. [[runtime.integerAddressableSize]], and
+
+   1. The number of bits required to represent [[runtime.maxIntegerValue]] if the value
+   of `maxIntegerBound` can be represented by 2&lt;sup&gt;n&lt;/sup&gt;-1 for some `n`. Otherwise,
+   one less than the number of bits required to represent [[runtime.maxIntegerValue]].
+
+   `maxBits` is `64` for the Java runtime and `53` for the
+   JavaScript runtime.&quot;
+  shared Integer maxBits;
+
+  // calculate maxBits
+  variable value maxValue = runtime.maxIntegerValue;
+  variable value numBits = 0;
+  while (maxValue &gt; 0) {
+    numBits++;
+    maxValue /= 2;
+  }
+  // reduce by one if not &quot;all 1&apos;s&quot;
+  // which is a theoretical concern; JS will be 53, Java 63
+  if ((2^numBits-1) &gt; runtime.maxIntegerValue) {
+    numBits--;
+  }
+  maxBits = largest(numBits, runtime.integerAddressableSize);
+
+  // calculate maxIntegerBound
+  maxIntegerBound = smallest(runtime.maxIntegerValue,
+                             2^smallest(63, maxBits) - 1);
+
+}
+</pre></body></html>

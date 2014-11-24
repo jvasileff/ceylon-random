@@ -1,0 +1,33 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>randomWholeBits.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import ceylon.math.whole {
+  zero,
+  Whole
+}
+import com.vasileff.ceylon.random.api {
+  Random,
+  randomLimits
+}
+
+// positive Integer&apos;s only
+Integer maxBits = smallest(randomLimits.maxBits, 62);
+
+&quot;Generate a [[ceylon.math.whole::Whole]] number holding `numBits` pseudorandom bits.
+ This method returns [[ceylon.math.whole::zero]] if `numBits &lt;= 0`.&quot;
+shared Whole randomWholeBits(
+    &quot;The entropy source.&quot;
+    Random random,
+    &quot;The number of bits.&quot;
+    variable Integer numBits) {
+  variable Whole result = zero;
+  while (numBits &gt; 0) {
+    value x = smallest(numBits, maxBits);
+    result = result.timesInteger(2^x);
+    result = result.plusInteger(random.nextInteger(2^x));
+    numBits -= x;
+  }
+  return result;
+}
+</pre></body></html>

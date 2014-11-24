@@ -1,0 +1,97 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>LCGRandom.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>import com.vasileff.ceylon.random.api {
+  Random,
+  randomLimits
+}
+
+&quot;A [Linear Congruential Generator](http://en.wikipedia.org/wiki/Linear_congruential_generator)
+ (LCG) pseudorandom number generator,
+ defined by the recurrence relation:
+
+     Xₙ₊₁ ≡ (a Xₙ + c) (mod m)
+
+ Using the parameters:
+
+     a = 25214903917
+     c = 11
+     m = 2^48
+
+ *Note:* for the JavaScript runtime, there is a loss of precision for Integers greater
+ than 2&lt;sup&gt;53&lt;/sup&gt; which may result in decreased quality of random numbers produced by
+ this class.
+
+ See &lt;http://en.wikipedia.org/wiki/Linear_congruential_generator&gt;&quot;
+shared final class LCGRandom (
+  &quot;The seed. The value is processed by [[reseed]] prior to use.&quot;
+  Integer seed = system.nanoseconds + system.milliseconds)
+    satisfies Random {
+
+  // we at least need (x % 2^48) to work
+  assert(runtime.maxIntegerValue &gt;= 2^48);
+
+  // Same parameters as java.util.Random, apparently
+  value a = 25214903917;
+  value c = 11;
+  value m = 2^48;
+  value m64 = m - 1;
+
+  // initialized later by reseed(seed)
+  late variable Integer xn;
+
+  &quot;Reseed this random number generator. For the Java runtime, the seed value is
+   processed using `newSeed.xor(a).and(m - 1)` prior to use, and for the JavaScript
+   runtime, `newSeed.magnitude % m`.&quot;
+  shared void reseed(Integer newSeed) {
+    if (realInts) {
+      xn = newSeed.xor(a).and(m64);
+    } else {
+      // TODO: good enough?
+      xn = newSeed.magnitude % m;
+    }
+  }
+
+  reseed(seed);
+
+  &quot;Generates an Integer holding `numBits` pseudorandom bits. This method returns `0` if
+   `numBits &lt;= 0`.&quot;
+  throws (`class Exception`, &quot;if [[numBits]] is greater than [[randomLimits.maxBits]].&quot;)
+  shared actual Integer nextBits(
+      &quot;The number of random bits to generate. Must not be greater than
+       [[com.vasileff.ceylon.random.api::randomLimits.maxBits]]&quot;
+      Integer numBits) {
+
+    if (numBits &gt; randomLimits.maxBits) {
+      throw Exception(&quot;numBits cannot be greater than
+                       ``randomLimits.maxBits`` on this platform&quot;);
+    }
+    else if (numBits &lt;= 0) {
+      return 0;
+    }
+    else if (numBits &lt;= 32) {
+      // next will never be negative; it&apos;s masked to the lower 48 bits
+      return next() / (2^(48 - numBits));
+    }
+    else {
+      return nextBits(numBits - 32) * 2^32 + nextBits(32);
+    }
+  }
+
+  Integer next() {
+    // TODO: document loss of entropy on Javascript due to 53 bit precision
+    if (realInts) {
+      return xn = (a * xn + c).and(m64);
+    } else {
+      // x % 2^n == x &amp; (2^n - 1) for x &gt;= 0
+      value step1 = a * xn + c;
+      assert(!step1.negative);
+      return xn = step1 % m;
+    }
+  }
+}
+
+// true for Java (64 bit bitwise operations supported)
+Boolean realInts = runtime.integerAddressableSize == 64;
+</pre></body></html>

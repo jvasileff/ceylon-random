@@ -1,0 +1,63 @@
+<!DOCTYPE html><html xmlns='http://www.w3.org/1999/xhtml'><head><meta charset='UTF-8'/>
+<title>Random.ceylon</title><link href='.resources/favicon.ico' rel='shortcut icon'/>
+<link href='.resources/ceylon.css' rel='stylesheet' type='text/css'/>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'/>
+<script type='text/javascript'>var resourceBaseUrl = '.resources/'</script><script src='.resources/jquery-1.8.2.min.js' type='text/javascript'></script><script src='.resources/rainbow.min.js' type='text/javascript'></script><script src='.resources/ceylon.js' type='text/javascript'></script><script src='.resources/ceylondoc.js' type='text/javascript'></script></head><body><pre data-language='ceylon' style='font-family: Inconsolata, Monaco, Courier, monospace'>&quot;An interface for random number generators. Satisfying classes must implement
+ [[nextBits]], which is used by the default implementaitons of the methods of this
+ interface.&quot;
+by(&quot;John Vasileff&quot;)
+shared interface Random {
+  &quot;Generates an Integer holding `numBits` pseudorandom bits. This method returns
+   `0` for `numBits &lt;= 0`.&quot;
+  throws (`class Exception`, &quot;if [[numBits]] is greater than [[randomLimits.maxBits]].&quot;)
+  shared formal Integer nextBits(Integer numBits);
+
+  &quot;Returns the next pseudorandom `Integer` between `0` (inclusive)
+   and [[bound]] (exclusive).&quot;
+  throws (`class Exception`,
+          &quot;if [[bound]] is less than `1` or greater than `randomLimits.maxIntegerBound`&quot;)
+  shared default Integer nextInteger(
+      &quot;The upper bound (exclusive).&quot;
+      Integer bound) {
+    if (bound &lt; 1 || bound &gt; randomLimits.maxIntegerBound) {
+      throw Exception(
+        &quot;bound must be a positive value less than runtime.maxIntegerValue&quot;);
+    }
+    else if (bound.and(bound - 1) == 0) {
+      // bound is an exact power of two
+      return nextBits(bitLength(bound) - 1);
+    }
+    else {
+      variable Integer result;
+      value numBits = bitLength(bound);
+      while ((result = nextBits(numBits)) &gt;= bound) { }
+      return result;
+    }
+  }
+
+  &quot;Returns the next pseudorandom `Boolean`.&quot;
+  shared default Boolean nextBoolean()
+      =&gt; nextBits(1) == 1;
+
+  &quot;Returns the next pseudorandom `Byte`.&quot;
+  shared default Byte nextByte()
+      =&gt; nextBits(8).byte;
+
+  &quot;Returns the next pseudorandom `Float` between `0.0` and `1.0`.&quot;
+  shared default Float nextFloat()
+      =&gt; nextBits(53).float * floatUnit;
+}
+
+Float floatUnit = 1.0 / 2^53; // avoid left shift on JS
+
+Integer bitLength(variable Integer number) {
+  // avoid right shift on JS
+  assert(number &gt;= 0 &amp;&amp; number &lt;= runtime.maxIntegerValue);
+  variable value numBits = 0;
+  while (number &gt; 0) {
+    numBits++;
+    number /= 2;
+  }
+  return numBits;
+}
+</pre></body></html>
