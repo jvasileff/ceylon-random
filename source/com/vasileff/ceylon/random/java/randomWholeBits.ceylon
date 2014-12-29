@@ -1,10 +1,10 @@
 import ceylon.math.whole {
-  zero,
-  Whole
+    zero,
+    Whole
 }
 import com.vasileff.ceylon.random.api {
-  Random,
-  randomLimits
+    Random,
+    randomLimits
 }
 
 // positive Integer's only
@@ -13,16 +13,16 @@ Integer maxBits = smallest(randomLimits.maxBits, 62);
 "Generate a [[ceylon.math.whole::Whole]] number holding `numBits` pseudorandom bits.
  This method returns [[ceylon.math.whole::zero]] if `numBits <= 0`."
 shared Whole randomWholeBits(
-    "The entropy source."
-    Random random,
-    "The number of bits."
-    variable Integer numBits) {
-  variable Whole result = zero;
-  while (numBits > 0) {
-    value x = smallest(numBits, maxBits);
-    result = result.timesInteger(2^x);
-    result = result.plusInteger(random.nextInteger(2^x));
-    numBits -= x;
-  }
-  return result;
+        "The entropy source."
+        Random random,
+        "The number of bits."
+        variable Integer numBits) {
+    variable Whole result = zero;
+    while (numBits > 0) {
+        value x = smallest(numBits, maxBits);
+        result = result.timesInteger(2^x);
+        result = result.plusInteger(random.nextInteger(2^x));
+        numBits -= x;
+    }
+    return result;
 }

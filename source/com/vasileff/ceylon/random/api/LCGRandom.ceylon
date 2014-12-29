@@ -1,6 +1,6 @@
 import com.vasileff.ceylon.random.api {
-  Random,
-  randomLimits
+    Random,
+    randomLimits
 }
 
 "A [Linear Congruential Generator](http://en.wikipedia.org/wiki/Linear_congruential_generator)
@@ -21,71 +21,71 @@ import com.vasileff.ceylon.random.api {
 
  See <http://en.wikipedia.org/wiki/Linear_congruential_generator>"
 shared final class LCGRandom (
-  "The seed. The value is processed by [[reseed]] prior to use."
-  Integer seed = system.nanoseconds + system.milliseconds)
-    satisfies Random {
+        "The seed. The value is processed by [[reseed]] prior to use."
+        Integer seed = system.nanoseconds + system.milliseconds)
+        satisfies Random {
 
-  // we at least need (x % 2^48) to work
-  assert(runtime.maxIntegerValue >= 2^48);
+    // we at least need (x % 2^48) to work
+    assert(runtime.maxIntegerValue >= 2^48);
 
-  // Same parameters as java.util.Random, apparently
-  value a = 25214903917;
-  value c = 11;
-  value m = 2^48;
-  value m64 = m - 1;
+    // Same parameters as java.util.Random, apparently
+    value a = 25214903917;
+    value c = 11;
+    value m = 2^48;
+    value m64 = m - 1;
 
-  // initialized later by reseed(seed)
-  late variable Integer xn;
+    // initialized later by reseed(seed)
+    late variable Integer xn;
 
-  "Reseed this random number generator. For the Java runtime, the seed value is
-   processed using `newSeed.xor(a).and(m - 1)` prior to use, and for the JavaScript
-   runtime, `newSeed.magnitude % m`."
-  shared void reseed(Integer newSeed) {
-    if (realInts) {
-      xn = newSeed.xor(a).and(m64);
-    } else {
-      // TODO: good enough?
-      xn = newSeed.magnitude % m;
+    "Reseed this random number generator. For the Java runtime, the seed value is
+     processed using `newSeed.xor(a).and(m - 1)` prior to use, and for the JavaScript
+     runtime, `newSeed.magnitude % m`."
+    shared void reseed(Integer newSeed) {
+        if (realInts) {
+            xn = newSeed.xor(a).and(m64);
+        } else {
+            // TODO: good enough?
+            xn = newSeed.magnitude % m;
+        }
     }
-  }
 
-  reseed(seed);
+    reseed(seed);
 
-  "Generates an Integer holding `numBits` pseudorandom bits. This method returns `0` if
-   `numBits <= 0`."
-  throws (`class Exception`, "if [[numBits]] is greater than [[randomLimits.maxBits]].")
-  shared actual Integer nextBits(
-      "The number of random bits to generate. Must not be greater than
-       [[com.vasileff.ceylon.random.api::randomLimits.maxBits]]"
-      Integer numBits) {
+    "Generates an Integer holding `numBits` pseudorandom bits. This method returns `0` if
+     `numBits <= 0`."
+    throws (`class Exception`, "if [[numBits]] is greater than [[randomLimits.maxBits]].")
+    shared actual Integer nextBits(
+        "The number of random bits to generate. Must not be greater than
+         [[com.vasileff.ceylon.random.api::randomLimits.maxBits]]"
+        Integer numBits) {
 
-    if (numBits > randomLimits.maxBits) {
-      throw Exception("numBits cannot be greater than
-                       ``randomLimits.maxBits`` on this platform");
+        if (numBits > randomLimits.maxBits) {
+            throw Exception("numBits cannot be greater than
+                             ``randomLimits.maxBits`` on this platform");
+        }
+        else if (numBits <= 0) {
+            return 0;
+        }
+        else if (numBits <= 32) {
+            // next will never be negative; it's masked to the lower 48 bits
+            return next() / (2^(48 - numBits));
+        }
+        else {
+            return nextBits(numBits - 32) * 2^32 + nextBits(32);
+        }
     }
-    else if (numBits <= 0) {
-      return 0;
-    }
-    else if (numBits <= 32) {
-      // next will never be negative; it's masked to the lower 48 bits
-      return next() / (2^(48 - numBits));
-    }
-    else {
-      return nextBits(numBits - 32) * 2^32 + nextBits(32);
-    }
-  }
 
-  Integer next() {
-    // TODO: document loss of entropy on Javascript due to 53 bit precision
-    if (realInts) {
-      return xn = (a * xn + c).and(m64);
-    } else {
-      // x % 2^n == x & (2^n - 1) for x >= 0
-      value step1 = a * xn + c;
-      assert(!step1.negative);
-      return xn = step1 % m;
+    Integer next() {
+        // TODO: document loss of entropy on Javascript due to 53 bit precision
+        if (realInts) {
+            return xn = (a * xn + c).and(m64);
+        } else {
+            // x % 2^n == x & (2^n - 1) for x >= 0
+            value step1 = a * xn + c;
+            assert(!step1.negative);
+            return xn = step1 % m;
+        }
     }
-  }
 }
 
 // true for Java (64 bit bitwise operations supported)
