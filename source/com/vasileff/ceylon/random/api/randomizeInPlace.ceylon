@@ -4,7 +4,7 @@ import ceylon.collection {
 
 shared void randomizeInPlace<Element>(
         Array<Element>|MutableList<Element> elements,
-        Random random) {
+        Random random = LCGRandom()) {
 
     // using objects rather than functions due to the Integer
     // boxing inherent with ceylon.language.Callables

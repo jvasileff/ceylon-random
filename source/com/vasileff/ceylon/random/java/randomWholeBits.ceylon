@@ -4,7 +4,8 @@ import ceylon.math.whole {
 }
 import com.vasileff.ceylon.random.api {
     Random,
-    randomLimits
+    randomLimits,
+    LCGRandom
 }
 
 // positive Integer's only
@@ -13,10 +14,10 @@ Integer maxBits = smallest(randomLimits.maxBits, 62);
 "Generate a [[ceylon.math.whole::Whole]] number holding `numBits` pseudorandom bits.
  This method returns [[ceylon.math.whole::zero]] if `numBits <= 0`."
 shared Whole randomWholeBits(
-        "The entropy source."
-        Random random,
         "The number of bits."
-        variable Integer numBits) {
+        variable Integer numBits,
+        "The entropy source."
+        Random random = LCGRandom()) {
     variable Whole result = zero;
     while (numBits > 0) {
         value x = smallest(numBits, maxBits);
