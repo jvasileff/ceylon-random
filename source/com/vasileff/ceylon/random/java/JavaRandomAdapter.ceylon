@@ -8,11 +8,11 @@ import java.util {
 
 "Adapts `java.util.Random` to [[com.vasileff.ceylon.random.api::Random]]."
 by("John Vasileff")
-shared abstract class JavaRandomAdapter<Delegate>() satisfies Random
+shared class JavaRandomAdapter<Delegate>(delegate) satisfies Random
         given Delegate satisfies JRandom {
 
     "The backing delegate."
-    shared formal Delegate delegate;
+    shared Delegate delegate;
 
     shared actual Integer nextBits(Integer numBits) {
         if (numBits == 0) {

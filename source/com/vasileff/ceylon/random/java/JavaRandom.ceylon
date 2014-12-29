@@ -8,19 +8,18 @@ shared final class JavaRandom(
         "The seed, if provided, will be used to construct the
          `java.util.Random` delegate."
         Integer? seed = null)
-        extends JavaRandomAdapter<JRandom>() {
-
-    shared actual JRandom delegate;
-
-    if (exists seed) {
-        delegate = JRandom(seed);
-    } else {
-        delegate = JRandom();
-    }
+        extends JavaRandomAdapter<JRandom>(newJRandom(seed)) {
 
     "Delegates to `java.util.Random.setSeed(long)`."
     shared void reseed(Integer newSeed) {
         delegate.setSeed(newSeed);
     }
+}
 
+JRandom newJRandom(Integer? seed) {
+    if (exists seed) {
+        return JRandom(seed);
+    } else {
+        return JRandom();
+    }
 }
