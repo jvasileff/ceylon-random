@@ -1,0 +1,21 @@
+var index = [
+{'name': 'com.vasileff.ceylon.random.api', 'type': 'package', 'url': 'index.html#section-package', 'doc': '', 'tags': [],'icons': ['icon-package']},
+{'name': 'LCGRandom.reseed', 'type': 'function', 'url': 'LCGRandom.type.html#reseed', 'doc': '<p>Reseed this random number generator.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'LCGRandom.nextBits', 'type': 'function', 'url': 'LCGRandom.type.html#nextBits', 'doc': '<p>Generates an Integer holding <code>numBits</code> pseudorandom bits.</p>\n', 'tags': [],'icons': ['icon-shared-member', 'icon-decoration-impl']},
+{'name': 'LCGRandom', 'type': 'class', 'url': 'LCGRandom.type.html', 'doc': '<p>A <a href="http://en.wikipedia.org/wiki/Linear_congruential_generator">Linear Congruential Generator</a>\n(LCG) pseudorandom number…</p>\n', 'tags': [],'icons': ['icon-class', 'icon-decoration-final']},
+{'name': 'Random.nextBits', 'type': 'function', 'url': 'Random.type.html#nextBits', 'doc': '<p>Generates an Integer holding <code>numBits</code> pseudorandom bits.</p>\n', 'tags': [],'icons': ['icon-shared-member', 'icon-decoration-formal']},
+{'name': 'Random.nextInteger', 'type': 'function', 'url': 'Random.type.html#nextInteger', 'doc': '<p>Returns the next pseudorandom <code>Integer</code> between <code>0</code> (inclusive)\nand <a class=\'link\' href=\'Random.type.html#nextInteger-bound\' title=\'Go to com.vasileff.ceylon.random.api::Random.nextInteger.bound\'><code><span class=\'identifier\'>bound</span></code></a> (exclusive).</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'Random.nextBoolean', 'type': 'function', 'url': 'Random.type.html#nextBoolean', 'doc': '<p>Returns the next pseudorandom <code>Boolean</code>.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'Random.nextByte', 'type': 'function', 'url': 'Random.type.html#nextByte', 'doc': '<p>Returns the next pseudorandom <code>Byte</code>.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'Random.nextFloat', 'type': 'function', 'url': 'Random.type.html#nextFloat', 'doc': '<p>Returns the next pseudorandom <code>Float</code> between <code>0.0</code> and <code>1.0</code>.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'Random', 'type': 'interface', 'url': 'Random.type.html', 'doc': '<p>An interface for random number generators.</p>\n', 'tags': [],'icons': ['icon-interface']},
+{'name': 'randomize', 'type': 'function', 'url': 'index.html#randomize', 'doc': '<p>Shuffle the given elements, returning a new <code>List</code>.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'randomizeInPlace', 'type': 'function', 'url': 'index.html#randomizeInPlace', 'doc': '<p>Shuffle the given elements.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'randomLimits.maxIntegerBound', 'type': 'value', 'url': 'randomLimits.object.html#maxIntegerBound', 'doc': '<p>The largest value that may be used as an argument to <span class=\'link-unresolvable\'><code>Random.nextInteger</code></span>.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'randomLimits.maxBits', 'type': 'value', 'url': 'randomLimits.object.html#maxBits', 'doc': '<p>The largest value that may be used as an argument to <span class=\'link-unresolvable\'><code>Random.nextBits</code></span>.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'randomLimits', 'type': 'object', 'url': 'randomLimits.object.html', 'doc': '<p>Provides limits relevant to generating random numbers on the current runtime.</p>\n', 'tags': [],'icons': ['icon-object']},
+{'name': 'randomLimits', 'type': 'value', 'url': 'index.html#randomLimits', 'doc': '<p>Provides limits relevant to generating random numbers on the current runtime.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'stream', 'type': 'function', 'url': 'index.html#stream', 'doc': '<p>Produces the <span title=\'ceylon.language::Iterable\'>stream</span> that results from repeated\ncalls to the given <a class=\'link-custom-text\' href=\'index.html#stream-next\' title=\'Go to com.vasileff.ceylon.random.api::stream.next\'>function</a>.</p>\n', 'tags': [],'icons': ['icon-shared-member']},
+{'name': 'com.vasileff.ceylon.random.api', 'type': 'module', 'url': 'index.html', 'doc': '', 'tags': [],'icons': []}];
+var tagIndex = [
+];
