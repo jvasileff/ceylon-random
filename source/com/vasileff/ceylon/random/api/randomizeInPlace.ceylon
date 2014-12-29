@@ -2,6 +2,7 @@ import ceylon.collection {
     MutableList
 }
 
+"Shuffle the given elements. This operation modifies the `Array|MutableList`."
 shared void randomizeInPlace<Element>(
         Array<Element>|MutableList<Element> elements,
         Random random = LCGRandom()) {
