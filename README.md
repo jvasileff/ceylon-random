@@ -5,8 +5,8 @@ Random Number Generator API for Ceylon
 
 ### Module Documentation
 
-- [com.vasileff.ceylon.random.api](http://jvasileff.github.io/ceylon-random/modules/com/vasileff/ceylon/random/api/0.0.3/module-doc/api/index.html)
-- [com.vasileff.ceylon.random.java](http://jvasileff.github.io/ceylon-random/modules/com/vasileff/ceylon/random/java/0.0.3/module-doc/api/index.html)
+- [com.vasileff.ceylon.random.api](http://jvasileff.github.io/ceylon-random/modules/com/vasileff/ceylon/random/api/0.0.4/module-doc/api/index.html)
+- [com.vasileff.ceylon.random.java](http://jvasileff.github.io/ceylon-random/modules/com/vasileff/ceylon/random/java/0.0.4/module-doc/api/index.html)
 
 ### Repository Setup
 
@@ -17,8 +17,8 @@ The modules are currently available at the URL:
 and can be added can be imported with the following in `module.ceylon`:
 
 ```ceylon
-import com.vasileff.ceylon.random.api "0.0.3";
-import com.vasileff.ceylon.random.java "0.0.3";
+import com.vasileff.ceylon.random.api "0.0.4";
+import com.vasileff.ceylon.random.java "0.0.4";
 ```
 
 ### Usage Examples
