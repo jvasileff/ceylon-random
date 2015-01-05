@@ -40,6 +40,26 @@ shared interface Random {
     "Returns the next pseudorandom `Float` between `0.0` and `1.0`."
     shared default Float nextFloat()
         => nextBits(53).float * floatUnit;
+
+    "Returns a random element from the supplied [[Iterable]]. Useful
+     argument types include [[Sequence]]s, such as `[\"heads\", \"tails\"]`,
+     and [[Range]]s, such as `[1:100]` or `['A'..'Z']`."
+    shared default Element|Absent
+            nextElement<Element, Absent>
+                (Iterable<Element, Absent> stream)
+                given Absent satisfies Null {
+        value size = stream.size;
+        if (size == 0, is Absent null) {
+            return null;
+        }
+        else if (size < 1) {
+            throw OverflowException(
+                "Invalid size ``size``; number of elements " +
+                "must be less than 'runtime.maxIntegerValue'.");
+        }
+        assert (exists element = stream.getFromFirst(nextInteger(size)));
+        return element;
+    }
 }
 
 Float floatUnit = 1.0 / 2^53; // avoid left shift on JS
