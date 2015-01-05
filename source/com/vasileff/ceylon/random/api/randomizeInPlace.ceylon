@@ -1,4 +1,4 @@
-"Shuffle the given elements. This operation modifies the `Array|MutableList`."
+"Shuffle the given elements. This operation modifies the `Array`."
 shared void randomizeInPlace<Element>(
         Array<Element> elements, Random random = LCGRandom()) {
     // Fisher-Yates Shuffle

@@ -5,6 +5,8 @@
 
      { next() }.cycled
  "
+deprecated("Use [[Iterable.cycled]] instead,
+            e.g., `{ LCGRandom().nextByte() }.cycled`.")
 shared {Element+} stream<Element>(
         "The function that produces the next element of the stream."
         Element next()) {
