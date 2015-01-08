@@ -34,7 +34,37 @@
     </target>
 
     <target name="doc">
-        <ceylon-doc encoding="${source.encoding}">
+        <ceylon-doc
+                encoding="${source.encoding}"
+                includesourcecode="true">
+            <moduleset refid="modules.random.jvm"/>
+        </ceylon-doc>
+    </target>
+
+    <target name="publish-herd">
+        <fail message="Please specify a target Herd upload repo url with -Dherd.repo=..." unless="herd.repo"/>
+        <fail message="Please specify a target Herd user name with -Dherd.user=..." unless="herd.user"/>
+        <fail message="Please specify a target Herd password with -Dherd.pass=..." unless="herd.pass"/>
+        <ceylon-compile
+                encoding="${source.encoding}"
+                out="${herd.repo}"
+                user="${herd.user}"
+                pass="${herd.pass}">
+            <moduleset refid="modules.random.jvm"/>
+        </ceylon-compile>
+        <ceylon-compile-js
+                encoding="${source.encoding}"
+                out="${herd.repo}"
+                user="${herd.user}"
+                pass="${herd.pass}">
+            <moduleset refid="modules.random.js"/>
+        </ceylon-compile-js>
+        <ceylon-doc
+                encoding="${source.encoding}"
+                includesourcecode="true"
+                out="${herd.repo}"
+                user="${herd.user}"
+                pass="${herd.pass}">
             <moduleset refid="modules.random.jvm"/>
         </ceylon-doc>
     </target>
