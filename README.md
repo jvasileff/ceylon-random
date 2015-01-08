@@ -5,8 +5,8 @@ Random Number Generator API for Ceylon
 
 ## Module Documentation
 
-- [com.vasileff.ceylon.random.api](https://modules.ceylon-lang.org/repo/1/com/vasileff/ceylon/random/api/0.0.4/module-doc/api/index.html)
-- [com.vasileff.ceylon.random.java](https://modules.ceylon-lang.org/repo/1/com/vasileff/ceylon/random/java/0.0.4/module-doc/api/index.html)
+- [com.vasileff.ceylon.random.api](https://modules.ceylon-lang.org/repo/1/com/vasileff/ceylon/random/api/0.0.5/module-doc/api/index.html)
+- [com.vasileff.ceylon.random.java](https://modules.ceylon-lang.org/repo/1/com/vasileff/ceylon/random/java/0.0.5/module-doc/api/index.html)
 
 ## Getting Started
 
@@ -15,8 +15,8 @@ which is automatically enabled by the Ceylon build tool. Simply add one or both
 of the following to your module's `module.ceylon`:
 
 ```ceylon
-import com.vasileff.ceylon.random.api "0.0.4";
-import com.vasileff.ceylon.random.java "0.0.4";
+import com.vasileff.ceylon.random.api "0.0.5";
+import com.vasileff.ceylon.random.java "0.0.5";
 ```
 
 The `api` module provides the main `Random` interface and related functions
@@ -88,6 +88,8 @@ print(randomize {
 ```
 
 ## Changes
+
+### v0.0.5
 
 ### v0.0.4
 
