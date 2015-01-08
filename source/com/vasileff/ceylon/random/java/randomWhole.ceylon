@@ -27,9 +27,9 @@ shared Whole randomWhole(
     } else if (magnitude.zero) {
         return origin;
     } else {
-        value numBits = bitLength(magnitude);
+        value bits = bitLength(magnitude);
         variable Whole x;
-        while ((x = randomWholeBits(numBits, random)) > magnitude) { }
+        while ((x = randomWholeBits(bits, random)) > magnitude) { }
         return x - origin;
     }
 }
@@ -37,10 +37,10 @@ shared Whole randomWhole(
 Integer bitLength(variable Whole number) {
     // TODO use right shift when available, or Whole.bitLength
     assert(!number.negative);
-    variable value numBits = 0;
+    variable value bits = 0;
     while (number > zero) {
-        numBits++;
+        bits++;
         number /= two;
     }
-    return numBits;
+    return bits;
 }

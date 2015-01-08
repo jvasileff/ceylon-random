@@ -14,13 +14,13 @@ shared class JavaRandomAdapter<Delegate>(delegate) satisfies Random
     "The backing delegate."
     shared Delegate delegate;
 
-    shared actual Integer nextBits(Integer numBits) {
-        if (numBits == 0) {
+    shared actual Integer nextBits(Integer bits) {
+        if (bits == 0) {
             return 0;
-        } else if (numBits < 31) {
-            return delegate.nextInt(2 ^ numBits);
+        } else if (bits < 31) {
+            return delegate.nextInt(2 ^ bits);
         } else {
-            return delegate.nextLong().rightLogicalShift(64 - numBits);
+            return delegate.nextLong().rightLogicalShift(64 - bits);
         }
     }
 }

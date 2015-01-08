@@ -51,27 +51,24 @@ shared final class LCGRandom (
 
     reseed(seed);
 
-    "Generates an Integer holding `numBits` pseudorandom bits. This method returns `0` if
-     `numBits <= 0`."
-    throws (`class Exception`, "if [[numBits]] is greater than [[randomLimits.maxBits]].")
     shared actual Integer nextBits(
         "The number of random bits to generate. Must not be greater than
          [[com.vasileff.ceylon.random.api::randomLimits.maxBits]]"
-        Integer numBits) {
+        Integer bits) {
 
-        if (numBits > randomLimits.maxBits) {
-            throw Exception("numBits cannot be greater than
+        if (bits > randomLimits.maxBits) {
+            throw Exception("bits cannot be greater than
                              ``randomLimits.maxBits`` on this platform");
         }
-        else if (numBits <= 0) {
+        else if (bits <= 0) {
             return 0;
         }
-        else if (numBits <= 32) {
+        else if (bits <= 32) {
             // next will never be negative; it's masked to the lower 48 bits
-            return next() / (2^(48 - numBits));
+            return next() / (2^(48 - bits));
         }
         else {
-            return nextBits(numBits - 32) * 2^32 + nextBits(32);
+            return nextBits(bits - 32) * 2^32 + nextBits(32);
         }
     }
 

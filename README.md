@@ -92,6 +92,8 @@ print(randomize {
 ### v0.0.4
 
 - Added `Random.nextElement(Iterable)`
+- Renamed the parameter `numBits` to `bits` for `Random.nextBits` and
+  `randomWholeBits`
 - Deprecated `{Element+} stream(Element next())`; use `Iterable.cycled` instead
 
 ### v0.0.3

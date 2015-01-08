@@ -3,10 +3,10 @@
  interface."
 by("John Vasileff")
 shared interface Random {
-    "Generates an Integer holding `numBits` pseudorandom bits. This method returns
-     `0` for `numBits <= 0`."
-    throws (`class Exception`, "if [[numBits]] is greater than [[randomLimits.maxBits]].")
-    shared formal Integer nextBits(Integer numBits);
+    "Generates an Integer holding `bits` pseudorandom bits. This method returns
+     `0` for `bits <= 0`."
+    throws (`class Exception`, "if [[bits]] is greater than [[randomLimits.maxBits]].")
+    shared formal Integer nextBits(Integer bits);
 
     "Returns the next pseudorandom `Integer` between `0` (inclusive)
      and [[bound]] (exclusive)."
@@ -23,8 +23,8 @@ shared interface Random {
             return nextBits(bitLength(bound) - 1);
         } else {
             variable Integer result;
-            value numBits = bitLength(bound);
-            while ((result = nextBits(numBits)) >= bound) { }
+            value bits = bitLength(bound);
+            while ((result = nextBits(bits)) >= bound) { }
             return result;
         }
     }
@@ -67,10 +67,10 @@ Float floatUnit = 1.0 / 2^53; // avoid left shift on JS
 Integer bitLength(variable Integer number) {
     // avoid right shift on JS
     assert(number >= 0 && number <= runtime.maxIntegerValue);
-    variable value numBits = 0;
+    variable value bits = 0;
     while (number > 0) {
-        numBits++;
+        bits++;
         number /= 2;
     }
-    return numBits;
+    return bits;
 }

@@ -28,17 +28,17 @@ shared object randomLimits {
 
     // calculate maxBits
     variable value maxValue = runtime.maxIntegerValue;
-    variable value numBits = 0;
+    variable value bits = 0;
     while (maxValue > 0) {
-        numBits++;
+        bits++;
         maxValue /= 2;
     }
     // reduce by one if not "all 1's"
     // which is a theoretical concern; JS will be 53, Java 63
-    if ((2^numBits-1) > runtime.maxIntegerValue) {
-        numBits--;
+    if ((2^bits-1) > runtime.maxIntegerValue) {
+        bits--;
     }
-    maxBits = largest(numBits, runtime.integerAddressableSize);
+    maxBits = largest(bits, runtime.integerAddressableSize);
 
     // calculate maxIntegerBound
     maxIntegerBound = smallest(runtime.maxIntegerValue,
