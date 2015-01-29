@@ -91,6 +91,8 @@ print(randomize {
 
 ### v0.0.5
 
+- Compiled for Ceylon 1.2.0
+
 ### v0.0.4
 
 - Added `Random.nextElement(Iterable)`
@@ -105,9 +107,9 @@ print(randomize {
 
 ### v0.0.2
 
-- Add `randomize` and `randomizeInPlace` functions
-- Make `JavaRandomAdapter` concrete
-- Combine `api` and `sample` modules
+- Added `randomize` and `randomizeInPlace` functions
+- Made `JavaRandomAdapter` concrete
+- Combined `api` and `sample` modules
 - First version available on Ceylon Herd
 
 ## License
