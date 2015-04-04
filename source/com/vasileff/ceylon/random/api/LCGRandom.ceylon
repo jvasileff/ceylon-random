@@ -56,6 +56,10 @@ shared final class LCGRandom (
          [[com.vasileff.ceylon.random.api::randomLimits.maxBits]]"
         Integer bits) {
 
+        // NOTE: only using the high-order 32 bits; the low-order
+        // bits have shorter cycles, with the lowest order bit
+        // simply alternating
+
         if (bits > randomLimits.maxBits) {
             throw Exception("bits cannot be greater than
                              ``randomLimits.maxBits`` on this platform");
