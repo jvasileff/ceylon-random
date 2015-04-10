@@ -10,12 +10,16 @@
     </path>
     <typedef resource="com/redhat/ceylon/ant/antlib.xml" classpathref="ant-tasks"/>
 
-    <moduleset id="modules.random.jvm">
+    <!-- directories -->
+    <property name="out.repo" location="${basedir}/modules"/>
+    <property name="ceylon.repo.dir" location="${user.home}/.ceylon/repo" />
+
+    <moduleset id="modules.jvm">
         <module name="com.vasileff.ceylon.random.api"/>
         <module name="com.vasileff.ceylon.random.java"/>
     </moduleset>
 
-    <moduleset id="modules.random.js">
+    <moduleset id="modules.js">
         <module name="com.vasileff.ceylon.random.api"/>
     </moduleset>
 
@@ -23,22 +27,43 @@
 
     <target name="compile">
         <ceylon-compile encoding="${source.encoding}">
-            <moduleset refid="modules.random.jvm"/>
+            <moduleset refid="modules.jvm"/>
         </ceylon-compile>
     </target>
 
     <target name="compile-js">
         <ceylon-compile-js encoding="${source.encoding}">
-            <moduleset refid="modules.random.js"/>
+            <moduleset refid="modules.js"/>
         </ceylon-compile-js>
+    </target>
+
+    <target name="test" depends="compile">
+        <ceylon-test report="true">
+            <moduleset refid="modules.jvm"/>
+        </ceylon-test>
+    </target>
+
+    <target name="test-js" depends="compile-js">
+        <ceylon-test-js report="true">
+            <moduleset refid="modules.js"/>
+        </ceylon-test-js>
     </target>
 
     <target name="doc">
         <ceylon-doc
                 encoding="${source.encoding}"
                 includesourcecode="true">
-            <moduleset refid="modules.random.jvm"/>
+            <moduleset refid="modules.jvm"/>
         </ceylon-doc>
+    </target>
+
+    <target name="publish" depends="all"
+            description="Copies the SDK modules to the user's repository">
+        <copy todir="${ceylon.repo.dir}" overwrite="true">
+            <fileset dir="${out.repo}">
+                <include name="com/vasileff/ceylon/random/**"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="publish-herd">
@@ -50,14 +75,14 @@
                 out="${herd.repo}"
                 user="${herd.user}"
                 pass="${herd.pass}">
-            <moduleset refid="modules.random.jvm"/>
+            <moduleset refid="modules.jvm"/>
         </ceylon-compile>
         <ceylon-compile-js
                 encoding="${source.encoding}"
                 out="${herd.repo}"
                 user="${herd.user}"
                 pass="${herd.pass}">
-            <moduleset refid="modules.random.js"/>
+            <moduleset refid="modules.js"/>
         </ceylon-compile-js>
         <ceylon-doc
                 encoding="${source.encoding}"
@@ -65,7 +90,7 @@
                 out="${herd.repo}"
                 user="${herd.user}"
                 pass="${herd.pass}">
-            <moduleset refid="modules.random.jvm"/>
+            <moduleset refid="modules.jvm"/>
         </ceylon-doc>
     </target>
 
