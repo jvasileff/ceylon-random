@@ -17,10 +17,12 @@
     <moduleset id="modules.jvm">
         <module name="com.vasileff.ceylon.random.api"/>
         <module name="com.vasileff.ceylon.random.java"/>
+        <module name="test.com.vasileff.ceylon.random.api"/>
     </moduleset>
 
     <moduleset id="modules.js">
         <module name="com.vasileff.ceylon.random.api"/>
+        <module name="test.com.vasileff.ceylon.random.api"/>
     </moduleset>
 
     <target name="all" depends="compile, compile-js, doc"/>
