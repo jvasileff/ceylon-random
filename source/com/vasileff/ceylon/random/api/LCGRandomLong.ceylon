@@ -4,7 +4,10 @@ import com.vasileff.ceylon.random.api {
 }
 import com.vasileff.ceylon.xmath.long {
     longNumber,
-    Long
+    Long,
+    zero,
+    one,
+    two
 }
 
 "A [Linear Congruential Generator](http://en.wikipedia.org/wiki/Linear_congruential_generator)
@@ -30,17 +33,11 @@ class LCGRandomLong (
         Integer seed = system.nanoseconds + system.milliseconds)
         satisfies Random {
 
-    // TODO remove workaround for
-    // https://github.com/ceylon/ceylon-ide-eclipse/issues/1314
-    value l0 = longNumber(0);
-    value l1 = longNumber(1);
-    value l2 = longNumber(2);
-
     // Same parameters as java.util.Random, apparently
     value a = longNumber(25214903917);
     value c = longNumber(11);
-    value m = l2.powerOfInteger(48);
-    value mask = m - l1;
+    value m = two.powerOfInteger(48);
+    value mask = m - one;
 
     // initialized later by reseed(seed)
     late variable Long xn;
@@ -90,7 +87,7 @@ class LCGRandomLong (
         }
 
         return if (bits <= 0) then
-            l0
+            zero
         else if (bits <= 32) then
             next().rightLogicalShift(48 - bits)
         else
