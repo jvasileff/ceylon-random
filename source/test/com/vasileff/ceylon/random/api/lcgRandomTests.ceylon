@@ -5,7 +5,8 @@ import ceylon.test {
 
 import com.vasileff.ceylon.random.api {
     LCGRandom,
-    randomLimits
+    randomLimits,
+    Random
 }
 
 test shared
@@ -39,8 +40,8 @@ void testAverageAndVarianceOfIntegers() {
     void test(Integer bound) {
         value random = LCGRandom();
         testAverageAndVariance(
-                (bound - 1).float,
-                () => random.nextInteger(bound).float);
+                impreciseFloat(bound - 1),
+                () => impreciseFloat(random.nextInteger(bound)));
     }
 
     // be sure to include 32-bits
@@ -62,10 +63,9 @@ test shared
 void testAverageAndVarianceOfBytes() {
     value random = LCGRandom();
     function generate()
-        =>  random.nextByte().unsigned
+        =>  impreciseFloat(random.nextByte().unsigned
                 .leftLogicalShift(8)
-                .or(random.nextByte().unsigned)
-                .float;
+                .or(random.nextByte().unsigned));
 
     testAverageAndVariance(65535.0, generate);
 }
@@ -75,26 +75,8 @@ void testAverageAndVarianceOfBooleans() {
     // don't *just* use booleans, 0..1 range
     // is too small for variance test
     value random = LCGRandom();
-    function generate()
-        =>  0.set(0, random.nextBoolean())
-            .set(1, random.nextBoolean())
-            .set(2, random.nextBoolean())
-            .set(3, random.nextBoolean())
-            .set(4, random.nextBoolean())
-            .set(5, random.nextBoolean())
-            .set(6, random.nextBoolean())
-            .set(7, random.nextBoolean())
-            .set(8, random.nextBoolean())
-            .set(9, random.nextBoolean())
-            .set(10, random.nextBoolean())
-            .set(11, random.nextBoolean())
-            .set(12, random.nextBoolean())
-            .set(13, random.nextBoolean())
-            .set(14, random.nextBoolean())
-            .set(15, random.nextBoolean())
-            .float;
-
-    testAverageAndVariance(65535.0, generate);
+    testAverageAndVariance(65535.0,
+        () => impreciseFloat(bitsFromBooleans(random, 16)));
 }
 
 void testAverageAndVariance(
@@ -165,4 +147,71 @@ void testAverageAndVariance(
             "variance of random numbers ``variance`` outside " +
             "expected range by ``stdDevs`` standard deviations");
     }
+}
+
+test shared
+void testChiSquaredBytes() {
+    value random = LCGRandom();
+    value stdDevs = chiSquaredDeviations {
+        max = 255;
+        buckets = 256;
+        *{random.nextByte().unsigned}
+                .cycled.take(256 * 5)
+    };
+    assertTrue(stdDevs.magnitude < 3.89,
+            "chi squared outside of expected value " +
+            "by ``stdDevs`` standard deviations");
+}
+
+test shared
+void testChiSquaredBooleans() {
+    value random = LCGRandom();
+    value stdDevs = chiSquaredDeviations {
+        max = 2^16 - 1;
+        buckets = 2^10;
+        *{bitsFromBooleans(random, 16)}
+                .cycled.take(2^10 * 5)
+    };
+    assertTrue(stdDevs.magnitude < 3.89,
+            "chi squared outside of expected value " +
+            "by ``stdDevs`` standard deviations");
+}
+
+test shared
+void testChiSquaredBits() {
+    value random = LCGRandom();
+    for (bits in 10..smallest(63, runtime.integerAddressableSize)) {
+        value stdDevs = chiSquaredDeviations {
+            max = 2^bits - 1;
+            buckets = 2^10;
+            *{random.nextBits(bits)}
+                    .cycled.take(2^10 * 5)
+        };
+        assertTrue(stdDevs.magnitude < 3.89,
+                "chi squared outside of expected value " +
+                "by ``stdDevs`` standard deviations");
+    }
+
+    // for the 64 bit test, only test the 63 most
+    // significant digits to avoid sign issues,
+    // which is fine; the lsb would be ignored anyway
+    if (runtime.integerAddressableSize == 64) {
+        value stdDevs = chiSquaredDeviations {
+            max = 2^63 - 1;
+            buckets = 2^10;
+            *{random.nextBits(64).rightLogicalShift(1)}
+                    .cycled.take(2^10 * 5)
+        };
+        assertTrue(stdDevs.magnitude < 3.89,
+                "chi squared outside of expected value " +
+                "by ``stdDevs`` standard deviations");
+    }
+}
+
+Integer bitsFromBooleans(Random random, Integer bits) {
+    variable value result = 0;
+    for (bit in 0:bits) {
+        result = result.set(bit, random.nextBoolean());
+    }
+    return result;
 }
