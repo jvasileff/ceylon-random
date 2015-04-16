@@ -26,7 +26,9 @@ void testRange() {
 
     // nextInteger range tests
     value mib = randomLimits.maxIntegerBound;
-    for (bound in (0..mib).by(mib/100).skip(1)) {
+    //workaround https://github.com/ceylon/ceylon.language/issues/656
+    //for (bound in (0..mib).by(mib/100).skip(1)) {
+    for (bound in (2..mib).by(mib/100)) {
         for (_ in 0:100) {
             value val = lcgRandom.nextInteger(bound);
             assertTrue(0 <= val < bound,
