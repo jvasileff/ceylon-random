@@ -45,8 +45,12 @@ Float|Absent average<Absent>(
 
 [Integer[]+] partition({Integer+} ints, Integer partitionsCount, variable Integer low, Integer partitionWidth) {
     variable value high = low + partitionWidth;
-    value partitions = (1..partitionsCount).collect((_) {
-        value p = ints.select((element) => low <= element < high);
+    
+    function geANDlt(Integer i) => low <= i < high;
+    function geANDle(Integer i) => low <= i <= high;
+    
+    value partitions = (1..partitionsCount).collect((index) {
+        value p = ints.select(index < partitionsCount then geANDlt else geANDle);
         low += partitionWidth;
         high += partitionWidth;
         if (high < low) { // must be overflow
@@ -54,9 +58,6 @@ Float|Absent average<Absent>(
         }
         return p;
     });
-    if (partitionsCount == 1) {
-        print(partitions);
-    }
     return partitions;
 }
 
