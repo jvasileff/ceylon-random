@@ -6,19 +6,19 @@ import ceylon.test {
 import com.vasileff.ceylon.random.api {
     LCGRandom,
     randomLimits,
-    Random
+    Random,
+    stream
 }
 
-test shared
+test shared suppressWarnings("deprecation")
 void testRange() {
-    value lcgRandom = LCGRandom();
+    value random = LCGRandom();
 
     // don't check 64 bit random numbers, which produce negative integers
     // nextBits range tests
     for (bits in 1..smallest(63, randomLimits.maxBits)) {
         value maxInclusive = 2^bits-1;
-        for (_ in 0:1k) {
-            value val = lcgRandom.nextBits(bits);
+        for (val in random.bits(bits).take(1k)) {
             assertTrue(0 <= val <= maxInclusive,
                 "nextBits(``bits``); 0 <= ``val`` <= ``maxInclusive``");
         }
@@ -29,21 +29,22 @@ void testRange() {
     //workaround https://github.com/ceylon/ceylon.language/issues/656
     //for (bound in (0..mib).by(mib/100).skip(1)) {
     for (bound in (2..mib).by(mib/100)) {
-        for (_ in 0:100) {
-            value val = lcgRandom.nextInteger(bound);
+        for (val in random.integers(bound).take(100)) {
             assertTrue(0 <= val < bound,
                 "nextInteger(``bound``); 0 <= ``val`` < ``bound``");
         }
     }
 }
 
-test shared
+test shared suppressWarnings("deprecation")
 void testAverageAndVarianceOfIntegers() {
+    value random = LCGRandom();
     void test(Integer bound) {
-        value random = LCGRandom();
         testAverageAndVariance(
                 impreciseFloat(bound - 1),
-                () => impreciseFloat(random.nextInteger(bound)));
+                random.integers(bound)
+                      .map(impreciseFloat)
+                      .take(1k));
     }
 
     // be sure to include 32-bits
@@ -55,55 +56,57 @@ void testAverageAndVarianceOfIntegers() {
     }
 }
 
-test shared
+test shared suppressWarnings("deprecation")
 void testAverageAndVarianceOfFloats() {
     value random = LCGRandom();
-    testAverageAndVariance(1.0, random.nextFloat);
+    testAverageAndVariance(1.0, random.floats.take(1k));
 }
 
-test shared
+test shared suppressWarnings("deprecation")
 void testAverageAndVarianceOfBytes() {
-    value random = LCGRandom();
-    function generate()
-        =>  impreciseFloat(random.nextByte().unsigned
+    value bytes = LCGRandom().bytes;
+    value twoBytes = zipPairs(bytes, bytes).map((pair)
+        =>  let ([a, b] = pair)
+            a.unsigned
                 .leftLogicalShift(8)
-                .or(random.nextByte().unsigned));
+                .or(b.unsigned));
 
-    testAverageAndVariance(65535.0, generate);
+    testAverageAndVariance(65535.0,
+        twoBytes.map(impreciseFloat).take(1k));
 }
 
 test shared
 void testAverageAndVarianceOfBooleans() {
-    // don't *just* use booleans, 0..1 range
+    // don't use just 1 boolean per sample; 0..1 range
     // is too small for variance test
     value random = LCGRandom();
     testAverageAndVariance(65535.0,
-        () => impreciseFloat(bitsFromBooleans(random, 16)));
+            bitsFromBooleans(random, 16)
+                    .map(impreciseFloat)
+                    .take(1k));
 }
 
 void testAverageAndVariance(
-        max, generateSample,
-        devs = 3.89,
-        count = 1k) {
+        max, uniformSamples,
+        devs = 3.890592) {
 
     "upper bound, inclusive"
     Float max;
 
     "generate a sample with uniform distribution"
-    Float() generateSample;
+    {Float*} uniformSamples;
 
     "allowable number of standard devations from mean;
      with 3.89 std deviations, 1 test in 10k should fail"
     Float devs;
 
-    "number of samples to test"
-    Integer count;
-
-    function validatedSample() {
-        value sample = generateSample();
+    function validateSample(Float sample) {
         assert (0.0 <= sample <= max);
         return sample;
     }
+
+    assert (exists [mean, stdDev, count] = meanAndStdDev(
+            uniformSamples.map(validateSample)));
 
     "expected variance for uniform distribution = `1/12 * (b-a)^2`"
     value uniformVariance = max ^ 2 / 12;
@@ -119,6 +122,7 @@ void testAverageAndVariance(
             let (n = count.float)
             let (κ = -1.2)
             uniformStdDev ^ 4 * (2 / (n - 1) + κ / n );
+
     value stdDevOfSampleVariance = varianceOfSampleVariance ^ 0.5;
 
     value minAverage = max / 2 - devs * stdDevOfSampleAverage;
@@ -126,10 +130,6 @@ void testAverageAndVariance(
 
     value minVariance = uniformVariance - devs * stdDevOfSampleVariance;
     value maxVariance = uniformVariance + devs * stdDevOfSampleVariance;
-
-    assert (exists [mean, stdDev] = meanAndStdDev {
-        for (_ in 0:count) validatedSample()
-    });
 
     // mean should be close to max/2
     if (! minAverage <= mean <= maxAverage) {
@@ -151,16 +151,16 @@ void testAverageAndVariance(
     }
 }
 
-test shared
+test shared suppressWarnings("deprecation")
 void testChiSquaredBytes() {
     value random = LCGRandom();
     value stdDevs = chiSquaredDeviations {
         max = 255;
         buckets = 256;
-        *{random.nextByte().unsigned}
-                .cycled.take(256 * 5)
+        samples = random.bytes
+            .map(Byte.unsigned).take(256*5);
     };
-    assertTrue(stdDevs.magnitude < 3.89,
+    assertTrue(stdDevs.magnitude < 3.890592,
             "chi squared outside of expected value " +
             "by ``stdDevs`` standard deviations");
 }
@@ -171,25 +171,25 @@ void testChiSquaredBooleans() {
     value stdDevs = chiSquaredDeviations {
         max = 2^16 - 1;
         buckets = 2^10;
-        *{bitsFromBooleans(random, 16)}
-                .cycled.take(2^10 * 5)
+        samples = bitsFromBooleans(random, 16)
+            .take(2^10 * 5);
     };
-    assertTrue(stdDevs.magnitude < 3.89,
+    assertTrue(stdDevs.magnitude < 3.890592,
             "chi squared outside of expected value " +
             "by ``stdDevs`` standard deviations");
 }
 
-test shared
+test shared suppressWarnings("deprecation")
 void testChiSquaredBits() {
     value random = LCGRandom();
     for (bits in 10..smallest(63, runtime.integerAddressableSize)) {
         value stdDevs = chiSquaredDeviations {
             max = 2^bits - 1;
             buckets = 2^10;
-            *{random.nextBits(bits)}
-                    .cycled.take(2^10 * 5)
+            samples = random.bits(bits)
+                .take(2^10 * 5);
         };
-        assertTrue(stdDevs.magnitude < 3.89,
+        assertTrue(stdDevs.magnitude < 3.890592,
                 "chi squared outside of expected value " +
                 "by ``stdDevs`` standard deviations");
     }
@@ -201,19 +201,22 @@ void testChiSquaredBits() {
         value stdDevs = chiSquaredDeviations {
             max = 2^63 - 1;
             buckets = 2^10;
-            *{random.nextBits(64).rightLogicalShift(1)}
-                    .cycled.take(2^10 * 5)
+            samples = random.bits(64)
+                .map((i) => i.rightLogicalShift(1))
+                .take(2^10 * 5);
         };
-        assertTrue(stdDevs.magnitude < 3.89,
+        assertTrue(stdDevs.magnitude < 3.890592,
                 "chi squared outside of expected value " +
                 "by ``stdDevs`` standard deviations");
     }
 }
 
-Integer bitsFromBooleans(Random random, Integer bits) {
-    variable value result = 0;
-    for (bit in 0:bits) {
-        result = result.set(bit, random.nextBoolean());
-    }
-    return result;
-}
+suppressWarnings("deprecation")
+{Integer*} bitsFromBooleans(Random random, Integer bits)
+    =>  stream(() {
+            variable value result = 0;
+            for (bit in 0:bits) {
+                result = result.set(bit, random.nextBoolean());
+            }
+            return result;
+        });

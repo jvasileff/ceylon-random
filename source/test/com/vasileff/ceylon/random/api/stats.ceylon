@@ -35,7 +35,7 @@ Float|Absent average<Absent>(
 
 "Return the mean and standard deviation of [[xs]], or [[null]]
  if `xs` has fewer than two elements."
-[Float, Float]? meanAndStdDev({<Float|Integer>*} xs) {
+[Float, Float, Integer]? meanAndStdDev({<Float|Integer>*} xs) {
     variable value k = 0;
     variable value m = 0.0;
     variable value s = 0.0;
@@ -52,7 +52,7 @@ Float|Absent average<Absent>(
     }
 
     return (k > 1)
-    then [m, (s / (k - 1)) ^ 0.5];
+    then [m, (s / (k - 1)) ^ 0.5, k];
 }
 
 Float chiSquared(
