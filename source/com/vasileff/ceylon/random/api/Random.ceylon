@@ -2,7 +2,9 @@
  [[nextBits]], which is used by the default implementaitons of the methods of this
  interface."
 by("John Vasileff")
+suppressWarnings("deprecation")
 shared interface Random {
+
     "Generates an Integer holding `bits` pseudorandom bits. This method returns
      `0` for `bits <= 0`."
     throws (`class Exception`, "if [[bits]] is greater than [[randomLimits.maxBits]].")
@@ -60,6 +62,35 @@ shared interface Random {
         assert (exists element = stream.getFromFirst(nextInteger(size)));
         return element;
     }
+
+    shared default deprecated("experimental")
+    InfiniteStream<Integer> bits
+            (Integer bits)
+        =>  stream(() => nextBits(bits));
+
+    shared default deprecated("experimental")
+    InfiniteStream<Integer> integers(
+            "The upper bound (exclusive)."
+            Integer bound)
+        =>  stream(() => nextInteger(bound));
+
+    shared default deprecated("experimental")
+    InfiniteStream<Boolean> booleans
+        =>  stream(nextBoolean);
+
+    shared default deprecated("experimental")
+    InfiniteStream<Byte> bytes
+        =>  stream(nextByte);
+
+    shared default deprecated("experimental")
+    InfiniteStream<Float> floats
+        =>  stream(nextFloat);
+
+    shared default deprecated("experimental")
+    InfiniteStream<Element|Absent> elements<Element, Absent>
+            (Iterable<Element, Absent> elements)
+            given Absent satisfies Null
+        =>  stream(() => nextElement(elements));
 }
 
 Float floatUnit = 1.0 / 2^53; // avoid left shift on JS
