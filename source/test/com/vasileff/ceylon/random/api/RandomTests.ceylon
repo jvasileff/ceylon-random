@@ -5,16 +5,14 @@ import ceylon.test {
 }
 
 import com.vasileff.ceylon.random.api {
-    LCGRandom,
     randomLimits,
     Random
 }
-import test.com.athaydes.specks {
-    successiveDiff
-}
 
-abstract class RandomTests(Random random) {
-        
+abstract class RandomTests(Random() getRandom) {
+    
+    value random = getRandom();
+    
     test shared
     void testRange() {
         
@@ -64,7 +62,7 @@ abstract class RandomTests(Random random) {
         
         // run multiple tests so we can try out different seeds
         for (i in 0:10) {
-            value random = LCGRandom();
+            value random = getRandom();
             assert (exists mean = average {
                 for (_ in 0:count) random.nextFloat()
             });
@@ -82,7 +80,7 @@ abstract class RandomTests(Random random) {
     }
 
     function nextInts(Integer count, Integer bits)
-            => (1..count).collect((_) => random.nextBits(bits));
+            => let (random = getRandom()) (1..count).collect((_) => random.nextBits(bits));
     
     test shared
     void testUniformDistribution() {
