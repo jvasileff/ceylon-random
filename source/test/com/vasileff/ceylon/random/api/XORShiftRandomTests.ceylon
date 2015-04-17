@@ -3,4 +3,4 @@ import com.vasileff.ceylon.random.api {
 }
 
 
-class XORShiftRandomTests() extends RandomTests(() => XORShiftRandom()) {}
+class XORShiftRandomTests() extends RandomTests(XORShiftRandom) {}
