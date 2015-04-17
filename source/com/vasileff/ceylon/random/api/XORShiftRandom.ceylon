@@ -45,10 +45,10 @@ shared class XORShiftRandom(
         value low = next32bits(); // take only 32 bits as JS bitwise ops use only 32 bits
         
         // "concatenate" low bits to high bits, take only n bits
-        value result = (high + low) % 2^bits;
+        value result = (high + low);
         return if (bits == randomLimits.maxBits)
             then result // with the sign bit included
-            else result.magnitude;
+            else if (result == 0) then 0 else result.magnitude % 2^bits;
     }
     
 }

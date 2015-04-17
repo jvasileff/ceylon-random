@@ -1,12 +1,16 @@
 import ceylon.test {
     test,
-    assertTrue
+    assertTrue,
+    assertEquals
 }
 
 import com.vasileff.ceylon.random.api {
     LCGRandom,
     randomLimits,
     Random
+}
+import test.com.athaydes.specks {
+    successiveDiff
 }
 
 abstract class RandomTests(Random random) {
@@ -77,5 +81,23 @@ abstract class RandomTests(Random random) {
         }
     }
 
+    function nextInts(Integer count, Integer bits)
+            => (1..count).collect((_) => random.nextBits(bits));
     
+    test shared
+    void testUniformDistribution() {
+        assertEquals(uniformDistribution(nextInts(250k, 16), 0, 2^16 / 16), success);
+        assertEquals(uniformDistribution(nextInts(250k, 32), 0, 2^32 / 16), success);
+        assertEquals(uniformDistribution(nextInts(250k, 48), 0, 2^48 / 16), success);
+        assertEquals(uniformDistribution(nextInts(1M, randomLimits.maxBits),
+            runtime.minIntegerValue, runtime.maxIntegerValue / 16, 32), success);
+    }
+    
+    test shared
+    void testNaturalDistributionBetweenDifferences() {
+        assertEquals(naturalDistribution(successiveDiff(nextInts(250k, 16)), -2^16, 2^16 / 8), success);
+        assertEquals(naturalDistribution(successiveDiff(nextInts(250k, 32)), -2^32, 2^32 / 8), success);
+        assertEquals(naturalDistribution(successiveDiff(nextInts(250k, 48)), -2^48, 2^48 / 8), success);
+    }
+
 }
