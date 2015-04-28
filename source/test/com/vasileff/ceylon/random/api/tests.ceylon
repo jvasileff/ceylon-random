@@ -1,18 +1,15 @@
 import ceylon.test {
-    test,
     assertTrue
 }
 
 import com.vasileff.ceylon.random.api {
-    LCGRandom,
     randomLimits,
     Random,
     stream
 }
 
-test shared suppressWarnings("deprecation")
-void testRange() {
-    value random = LCGRandom();
+shared suppressWarnings("deprecation")
+void testRange(Random random) {
 
     // don't check 64 bit random numbers, which produce negative integers
     // nextBits range tests
@@ -36,9 +33,8 @@ void testRange() {
     }
 }
 
-test shared suppressWarnings("deprecation")
-void testAverageAndVarianceOfIntegers() {
-    value random = LCGRandom();
+shared suppressWarnings("deprecation")
+void testAverageAndVarianceOfIntegers(Random random) {
     void test(Integer bound) {
         testAverageAndVariance(
                 impreciseFloat(bound - 1),
@@ -56,15 +52,14 @@ void testAverageAndVarianceOfIntegers() {
     }
 }
 
-test shared suppressWarnings("deprecation")
-void testAverageAndVarianceOfFloats() {
-    value random = LCGRandom();
+shared suppressWarnings("deprecation")
+void testAverageAndVarianceOfFloats(Random random) {
     testAverageAndVariance(1.0, random.floats.take(1k));
 }
 
-test shared suppressWarnings("deprecation")
-void testAverageAndVarianceOfBytes() {
-    value bytes = LCGRandom().bytes;
+shared suppressWarnings("deprecation")
+void testAverageAndVarianceOfBytes(Random random) {
+    value bytes = random.bytes;
     value twoBytes = zipPairs(bytes, bytes).map((pair)
         =>  let ([a, b] = pair)
             a.unsigned
@@ -75,11 +70,10 @@ void testAverageAndVarianceOfBytes() {
         twoBytes.map(impreciseFloat).take(1k));
 }
 
-test shared
-void testAverageAndVarianceOfBooleans() {
+shared
+void testAverageAndVarianceOfBooleans(Random random) {
     // don't use just 1 boolean per sample; 0..1 range
     // is too small for variance test
-    value random = LCGRandom();
     testAverageAndVariance(65535.0,
             bitsFromBooleans(random, 16)
                     .map(impreciseFloat)
@@ -151,9 +145,8 @@ void testAverageAndVariance(
     }
 }
 
-test shared suppressWarnings("deprecation")
-void testChiSquaredBytes() {
-    value random = LCGRandom();
+shared suppressWarnings("deprecation")
+void testChiSquaredBytes(Random random) {
     value stdDevs = chiSquaredDeviations {
         max = 255;
         buckets = 256;
@@ -165,9 +158,8 @@ void testChiSquaredBytes() {
              by ``stdDevs`` standard deviations");
 }
 
-test shared
-void testChiSquaredBooleans() {
-    value random = LCGRandom();
+shared
+void testChiSquaredBooleans(Random random) {
     value stdDevs = chiSquaredDeviations {
         max = 2^16 - 1;
         buckets = 2^10;
@@ -179,9 +171,8 @@ void testChiSquaredBooleans() {
              by ``stdDevs`` standard deviations");
 }
 
-test shared suppressWarnings("deprecation")
-void testChiSquaredBits() {
-    value random = LCGRandom();
+shared suppressWarnings("deprecation")
+void testChiSquaredBits(Random random) {
     for (bits in 10..smallest(63, runtime.integerAddressableSize)) {
         value stdDevs = chiSquaredDeviations {
             max = 2^bits - 1;
