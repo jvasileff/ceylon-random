@@ -13,13 +13,15 @@ shared interface Random {
     "Returns the next pseudorandom `Integer` between `0` (inclusive)
      and [[bound]] (exclusive)."
     throws (`class Exception`,
-        "if [[bound]] is less than `1` or greater than [[randomLimits.maxIntegerBound]]")
+        "if [[bound]] is less than `1` or greater \
+         than [[randomLimits.maxIntegerBound]]")
     shared default Integer nextInteger(
             "The upper bound (exclusive)."
             Integer bound) {
         if (bound < 1 || bound > randomLimits.maxIntegerBound) {
             throw Exception(
-                "bound must be a positive value less than randomLimits.maxIntegerBound");
+                "bound must be a positive value less than \
+                 randomLimits.maxIntegerBound");
         } else if (bound.and(bound - 1) == 0) {
             // bound is an exact power of two
             return nextBits(bitLength(bound) - 1);
@@ -56,8 +58,8 @@ shared interface Random {
         }
         else if (size < 1) {
             throw OverflowException(
-                "Invalid size ``size``; number of elements " +
-                "must be less than 'runtime.maxIntegerValue'.");
+                "Invalid size ``size``; number of elements \
+                 must be less than 'runtime.maxIntegerValue'.");
         }
         assert (exists element = stream.getFromFirst(nextInteger(size)));
         return element;

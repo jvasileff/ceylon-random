@@ -136,8 +136,8 @@ void testAverageAndVariance(
         value offset = mean - 0.5;
         value stdDevs = offset/stdDevOfSampleAverage;
         assertTrue(minAverage <= mean <= maxAverage,
-            "average of random numbers ``mean`` outside " +
-            "expected range by ``stdDevs`` standard deviations");
+            "average of random numbers ``mean`` outside \
+             expected range by ``stdDevs`` standard deviations");
     }
 
     // variance should be close to expected variance
@@ -146,8 +146,8 @@ void testAverageAndVariance(
         value offset = uniformVariance - variance;
         value stdDevs = offset/stdDevOfSampleVariance;
         assertTrue(minVariance <= variance <= maxVariance,
-            "variance of random numbers ``variance`` outside " +
-            "expected range by ``stdDevs`` standard deviations");
+            "variance of random numbers ``variance`` outside \
+             expected range by ``stdDevs`` standard deviations");
     }
 }
 
@@ -161,8 +161,8 @@ void testChiSquaredBytes() {
             .map(Byte.unsigned).take(256*5);
     };
     assertTrue(stdDevs.magnitude < 3.890592,
-            "chi squared outside of expected value " +
-            "by ``stdDevs`` standard deviations");
+            "chi squared outside of expected value \
+             by ``stdDevs`` standard deviations");
 }
 
 test shared
@@ -175,8 +175,8 @@ void testChiSquaredBooleans() {
             .take(2^10 * 5);
     };
     assertTrue(stdDevs.magnitude < 3.890592,
-            "chi squared outside of expected value " +
-            "by ``stdDevs`` standard deviations");
+            "chi squared outside of expected value \
+             by ``stdDevs`` standard deviations");
 }
 
 test shared suppressWarnings("deprecation")
@@ -190,8 +190,8 @@ void testChiSquaredBits() {
                 .take(2^10 * 5);
         };
         assertTrue(stdDevs.magnitude < 3.890592,
-                "chi squared outside of expected value " +
-                "by ``stdDevs`` standard deviations");
+                "chi squared outside of expected value \
+                 by ``stdDevs`` standard deviations");
     }
 
     // for the 64 bit test, only test the 63 most
@@ -206,8 +206,8 @@ void testChiSquaredBits() {
                 .take(2^10 * 5);
         };
         assertTrue(stdDevs.magnitude < 3.890592,
-                "chi squared outside of expected value " +
-                "by ``stdDevs`` standard deviations");
+                "chi squared outside of expected value \
+                 by ``stdDevs`` standard deviations");
     }
 }
 

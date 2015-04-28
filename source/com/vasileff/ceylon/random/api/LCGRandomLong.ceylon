@@ -82,8 +82,8 @@ class LCGRandomLong (
         // simply alternating
 
         if (bits > randomLimits.maxBits) {
-            throw Exception("bits cannot be greater than " +
-                            "``randomLimits.maxBits`` on this platform");
+            throw Exception("bits cannot be greater than \
+                             ``randomLimits.maxBits`` on this platform");
         }
 
         return if (bits <= 0) then
