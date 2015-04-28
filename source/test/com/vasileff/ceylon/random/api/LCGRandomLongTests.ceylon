@@ -1,6 +1,6 @@
 import com.vasileff.ceylon.random.api {
-    LCGRandom
+    LCGRandomLong
 }
 
 shared
-class LCGRandomLongTests() extends StandardTests(LCGRandom) {}
+class LCGRandomLongTests() extends StandardTests(LCGRandomLong) {}
