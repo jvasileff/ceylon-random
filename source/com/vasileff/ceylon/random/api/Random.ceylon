@@ -5,10 +5,19 @@ by("John Vasileff")
 suppressWarnings("deprecation")
 shared interface Random {
 
-    "Generates an Integer holding `bits` pseudorandom bits. This method returns
-     `0` for `bits <= 0`."
-    throws (`class Exception`, "if [[bits]] is greater than [[randomLimits.maxBits]].")
-    shared formal Integer nextBits(Integer bits);
+    "Generates an Integer holding `bits` pseudorandom bits.
+     The returned value will be:
+
+     * equal to `0` for `bits <= 0`
+     * in the range `0..(2^n - 1)` for `bits in 1..63`
+     * in the range `-2^63..(2^63 - 1)` for `bits == 64`
+
+     Note that `bits` may not be greater than [[randomLimits.maxBits]]."
+    throws(`class Exception`,
+           "if [[bits]] is greater than [[randomLimits.maxBits]].")
+    shared formal Integer nextBits(
+            "The number of psuedorandom bits to generate"
+            Integer bits);
 
     "Returns the next pseudorandom `Integer` between `0` (inclusive)
      and [[bound]] (exclusive)."
