@@ -72,7 +72,12 @@ shared final class LCGRandom (
             return next() / (2^(48 - bits));
         }
         else {
-            return nextBits(bits - 32) * 2^32 + nextBits(32);
+            // request minimal number of bits on each call to
+            // nextBits in order to prefer higher-order bits
+            value firstCount = bits / 2;
+            value secondCount =  bits - firstCount;
+            return nextBits(firstCount) * 2^secondCount
+                    + nextBits(secondCount);
         }
     }
 

@@ -91,7 +91,12 @@ class LCGRandomLong (
         else if (bits <= 32) then
             next().rightLogicalShift(48 - bits)
         else
-            nextBitsLong(bits - 32).leftLogicalShift(32) + nextBitsLong(32);
+            // request minimal number of bits on each call to
+            // nextBitsLong in order to prefer higher-order bits
+            let (firstCount = bits / 2)
+            let (secondCount =  bits - firstCount)
+            nextBitsLong(firstCount).leftLogicalShift(secondCount)
+                + nextBitsLong(secondCount);
     }
 
     Long next() => xn = (a * xn + c).and(mask);
