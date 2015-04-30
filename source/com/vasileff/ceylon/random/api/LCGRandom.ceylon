@@ -9,15 +9,19 @@ import com.vasileff.ceylon.random.api {
 
      Xₙ₊₁ ≡ (a Xₙ + c) (mod m)
 
- Using the parameters:
+ The following parameters are used for the JVM:
 
      a = 25214903917
      c = 11
      m = 2^48
+     output bits = 16..47
 
- *Note:* for the JavaScript runtime, there is a loss of precision for Integers greater
- than 2<sup>53</sup> which may result in decreased quality of random numbers produced by
- this class.
+ And for JavaScript:
+
+     a = 214013
+     c = 2531011
+     m = 2^32
+     output bits = 16..30
 
  See <http://en.wikipedia.org/wiki/Linear_congruential_generator>"
 shared final class LCGRandom (
@@ -25,14 +29,30 @@ shared final class LCGRandom (
         Integer seed = system.nanoseconds + system.milliseconds)
         satisfies Random {
 
-    // we at least need (x % 2^48) to work
-    assert(runtime.maxIntegerValue >= 2^48);
+    Integer a;
+    Integer c;
+    Integer m;
+    Integer highUsableBit; // counting from 1
+    Integer usableBitCount;
 
-    // Same parameters as java.util.Random, apparently
-    value a = 25214903917;
-    value c = 11;
-    value m = 2^48;
-    value m64 = m - 1;
+    if (realInts) {
+        // Same parameters as java.util.Random, apparently
+        a = 25214903917;
+        c = 11;
+        m = 2^48;
+        highUsableBit = 48; // counting from 1
+        usableBitCount = 32;
+    }
+    else {
+        a = 214013;
+        c = 2531011;
+        m = 2^32;
+        highUsableBit = 31; // counting from 1
+        usableBitCount = 15;
+    }
+
+    value mask = m - 1;
+    value highBitM = 2^highUsableBit;
 
     // initialized later by reseed(seed)
     late variable Integer xn;
@@ -42,49 +62,51 @@ shared final class LCGRandom (
      runtime, `newSeed.magnitude % m`."
     shared void reseed(Integer newSeed) {
         if (realInts) {
-            xn = newSeed.xor(a).and(m64);
+            xn = newSeed.xor(a).and(mask);
         } else {
-            // TODO: good enough?
             xn = newSeed.magnitude % m;
         }
     }
 
     reseed(seed);
 
-    shared actual Integer nextBits(
-        "The number of random bits to generate. Must not be greater than
-         [[com.vasileff.ceylon.random.api::randomLimits.maxBits]]"
-        Integer bits) {
-
-        // NOTE: only using the high-order 32 bits; the low-order
+    shared actual
+    Integer nextBits(Integer bits) {
+        // NOTE: only using the high-order bits; the low-order
         // bits have shorter cycles, with the lowest order bit
         // simply alternating
 
-        if (bits > randomLimits.maxBits) {
-            throw Exception("bits cannot be greater than
-                             ``randomLimits.maxBits`` on this platform");
-        }
-        else if (bits <= 0) {
+        if (bits <= 0) {
             return 0;
         }
-        else if (bits <= 32) {
-            // next will never be negative; it's masked to the lower 48 bits
-            return next() / (2^(48 - bits));
+        else if (bits <= usableBitCount) {
+            // next will never be negative
+            return next()
+                    % highBitM
+                    / (2^(highUsableBit - bits));
+        }
+        else if (bits <= randomLimits.maxBits) {
+            variable value remaining = bits;
+            variable Integer result = 0;
+            while (remaining > 0) {
+                value count = if (remaining <= usableBitCount)
+                              then remaining
+                              else usableBitCount;
+                result *= 2^count;
+                result += nextBits(count);
+                remaining -= count;
+            }
+            return result;
         }
         else {
-            // request minimal number of bits on each call to
-            // nextBits in order to prefer higher-order bits
-            value firstCount = bits / 2;
-            value secondCount =  bits - firstCount;
-            return nextBits(firstCount) * 2^secondCount
-                    + nextBits(secondCount);
+            throw Exception("bits cannot be greater than \
+                             ``randomLimits.maxBits`` on this platform");
         }
     }
 
     Integer next() {
-        // TODO: document loss of entropy on Javascript due to 53 bit precision
         if (realInts) {
-            return xn = (a * xn + c).and(m64);
+            return xn = (a * xn + c).and(mask);
         } else {
             // x % 2^n == x & (2^n - 1) for x >= 0
             value step1 = a * xn + c;
