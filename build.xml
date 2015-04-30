@@ -64,6 +64,7 @@
         <copy todir="${ceylon.repo.dir}" overwrite="true">
             <fileset dir="${out.repo}">
                 <include name="com/vasileff/ceylon/random/**"/>
+                <include name="test/com/vasileff/ceylon/random/**"/>
             </fileset>
         </copy>
     </target>
