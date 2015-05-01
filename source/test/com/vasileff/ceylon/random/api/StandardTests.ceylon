@@ -14,29 +14,36 @@ class StandardTests(Random() random) {
 
     test shared
     void testAverageAndVarianceOfIntegers()
-        =>  package.testAverageAndVarianceOfIntegers(random());
+        =>  package.testAverageAndVarianceOfIntegers(
+                RangeCheckingRandom(random()));
 
     test shared
     void testAverageAndVarianceOfFloats()
-        =>  package.testAverageAndVarianceOfFloats(random());
+        =>  package.testAverageAndVarianceOfFloats(
+                RangeCheckingRandom(random()));
 
     test shared
     void testAverageAndVarianceOfBytes()
-        =>  package.testAverageAndVarianceOfBytes(random());
+        =>  package.testAverageAndVarianceOfBytes(
+                RangeCheckingRandom(random()));
 
     test shared
     void testAverageAndVarianceOfBooleans()
-        =>  package.testAverageAndVarianceOfBooleans(random());
+        =>  package.testAverageAndVarianceOfBooleans(
+                RangeCheckingRandom(random()));
 
     test shared
     void testChiSquaredBytes()
-        =>  package.testChiSquaredBytes(random());
+        =>  package.testChiSquaredBytes(
+                RangeCheckingRandom(random()));
 
     test shared
     void testChiSquaredBooleans()
-        =>  package.testChiSquaredBooleans(random());
+        =>  package.testChiSquaredBooleans(
+                RangeCheckingRandom(random()));
 
     test shared
     void testChiSquaredBits()
-        =>  package.testChiSquaredBits(random());
+        =>  package.testChiSquaredBits(
+                RangeCheckingRandom(random()));
 }
