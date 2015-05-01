@@ -86,52 +86,6 @@ void testAverageAndVarianceOfBooleans
                     stdDevs);
 }
 
-[Float, Float]? meanAndVarianceStdDevs(max, uniformSamples) {
-
-    "upper bound, inclusive"
-    Float max;
-
-    "generate a sample with uniform distribution"
-    {Float*} uniformSamples;
-
-    function validateSample(Float sample) {
-        assert (0.0 <= sample <= max);
-        return sample;
-    }
-
-    if (exists [averageMeasured, stdDevMeasured, count] =
-            meanAndStdDev(uniformSamples.map(validateSample))) {
-
-        "expected variance for uniform distribution = `1/12 * (b-a)^2`"
-        value uniformVariance = max ^ 2 / 12;
-        value uniformStdDev = uniformVariance ^ 0.5;
-
-        "expected standard devation of the average
-         of count samples = `sampleStdDev / sqrt(count)`"
-        value stdDevOfSampleAverage = uniformStdDev / count ^ 0.5;
-
-        "variance of the sample variance for a uniform distribution.
-         See <http://en.wikipedia.org/wiki/Variance#Distribution_of_the_sample_variance>"
-        value varianceOfSampleVariance =
-                let (n = count.float)
-                let (κ = -1.2)
-                uniformStdDev ^ 4 * (2 / (n - 1) + κ / n );
-        value stdDevOfSampleVariance = varianceOfSampleVariance ^ 0.5;
-
-        // measured
-        value averageStdDevsMeasured =
-                (max / 2 - averageMeasured) / stdDevOfSampleAverage;
-
-        value varianceStdDevsMeasured =
-                (uniformVariance - stdDevMeasured ^ 2) / stdDevOfSampleVariance;
-
-        return [averageStdDevsMeasured, varianceStdDevsMeasured];
-    }
-    else {
-        return null;
-    }
-}
-
 shared
 void testAverageAndVariance(max, uniformSamples, stdDevs) {
     "upper bound, inclusive"
