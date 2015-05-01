@@ -34,13 +34,15 @@ void testRange(Random random) {
 }
 
 shared suppressWarnings("deprecation")
-void testAverageAndVarianceOfIntegers(Random random) {
+void testAverageAndVarianceOfIntegers
+        (Random random, Float stdDevs) {
     void test(Integer bound) {
         testAverageAndVariance(
                 impreciseFloat(bound - 1),
                 random.integers(bound)
                       .map(impreciseFloat)
-                      .take(1k));
+                      .take(1k),
+                stdDevs);
     }
 
     // be sure to include 32-bits
@@ -53,12 +55,13 @@ void testAverageAndVarianceOfIntegers(Random random) {
 }
 
 shared suppressWarnings("deprecation")
-void testAverageAndVarianceOfFloats(Random random) {
-    testAverageAndVariance(1.0, random.floats.take(1k));
-}
+void testAverageAndVarianceOfFloats
+        (Random random, Float stdDevs)
+    =>  testAverageAndVariance(1.0, random.floats.take(1k), stdDevs);
 
 shared suppressWarnings("deprecation")
-void testAverageAndVarianceOfBytes(Random random) {
+void testAverageAndVarianceOfBytes
+        (Random random, Float stdDevs) {
     value bytes = random.bytes;
     value twoBytes = zipPairs(bytes, bytes).map((pair)
         =>  let ([a, b] = pair)
@@ -67,22 +70,24 @@ void testAverageAndVarianceOfBytes(Random random) {
                 .or(b.unsigned));
 
     testAverageAndVariance(65535.0,
-        twoBytes.map(impreciseFloat).take(1k));
+        twoBytes.map(impreciseFloat).take(1k),
+        stdDevs);
 }
 
 shared
-void testAverageAndVarianceOfBooleans(Random random) {
+void testAverageAndVarianceOfBooleans
+        (Random random, Float stdDevs) {
     // don't use just 1 boolean per sample; 0..1 range
     // is too small for variance test
     testAverageAndVariance(65535.0,
             bitsFromBooleans(random, 16)
                     .map(impreciseFloat)
-                    .take(1k));
+                    .take(1k),
+                    stdDevs);
 }
 
 void testAverageAndVariance(
-        max, uniformSamples,
-        devs = 3.890592) {
+        max, uniformSamples, stdDevs) {
 
     "upper bound, inclusive"
     Float max;
@@ -92,7 +97,7 @@ void testAverageAndVariance(
 
     "allowable number of standard devations from mean;
      with 3.89 std deviations, 1 test in 10k should fail"
-    Float devs;
+    Float stdDevs;
 
     function validateSample(Float sample) {
         assert (0.0 <= sample <= max);
@@ -119,86 +124,89 @@ void testAverageAndVariance(
 
     value stdDevOfSampleVariance = varianceOfSampleVariance ^ 0.5;
 
-    value minAverage = max / 2 - devs * stdDevOfSampleAverage;
-    value maxAverage = max / 2 + devs * stdDevOfSampleAverage;
+    value minAverage = max / 2 - stdDevs * stdDevOfSampleAverage;
+    value maxAverage = max / 2 + stdDevs * stdDevOfSampleAverage;
 
-    value minVariance = uniformVariance - devs * stdDevOfSampleVariance;
-    value maxVariance = uniformVariance + devs * stdDevOfSampleVariance;
+    value minVariance = uniformVariance - stdDevs * stdDevOfSampleVariance;
+    value maxVariance = uniformVariance + stdDevs * stdDevOfSampleVariance;
 
     // mean should be close to max/2
     if (! minAverage <= mean <= maxAverage) {
         value offset = mean - 0.5;
-        value stdDevs = offset/stdDevOfSampleAverage;
+        value stdDevsMeasured = offset/stdDevOfSampleAverage;
         assertTrue(minAverage <= mean <= maxAverage,
             "average of random numbers ``mean`` outside \
-             expected range by ``stdDevs`` standard deviations");
+             expected range by ``stdDevsMeasured`` standard deviations");
     }
 
     // variance should be close to expected variance
     value variance = stdDev ^ 2;
     if (! minVariance <= variance <= maxVariance) {
         value offset = uniformVariance - variance;
-        value stdDevs = offset/stdDevOfSampleVariance;
+        value stdDevsMeasured = offset/stdDevOfSampleVariance;
         assertTrue(minVariance <= variance <= maxVariance,
             "variance of random numbers ``variance`` outside \
-             expected range by ``stdDevs`` standard deviations");
+             expected range by ``stdDevsMeasured`` standard deviations");
     }
 }
 
 shared suppressWarnings("deprecation")
-void testChiSquaredBytes(Random random) {
-    value stdDevs = chiSquaredDeviations {
+void testChiSquaredBytes
+        (Random random, Float stdDevs) {
+    value stdDevsMeasured = chiSquaredDeviations {
         max = 255;
         buckets = 256;
         samples = random.bytes
             .map(Byte.unsigned).take(256*5);
     };
-    assertTrue(stdDevs.magnitude < 3.890592,
+    assertTrue(stdDevsMeasured.magnitude < stdDevs,
             "chi squared outside of expected value \
-             by ``stdDevs`` standard deviations");
+             by ``stdDevsMeasured`` standard deviations");
 }
 
 shared
-void testChiSquaredBooleans(Random random) {
-    value stdDevs = chiSquaredDeviations {
+void testChiSquaredBooleans
+        (Random random, Float stdDevs) {
+    value stdDevsMeasured = chiSquaredDeviations {
         max = 2^16 - 1;
         buckets = 2^10;
         samples = bitsFromBooleans(random, 16)
             .take(2^10 * 5);
     };
-    assertTrue(stdDevs.magnitude < 3.890592,
+    assertTrue(stdDevsMeasured.magnitude < stdDevs,
             "chi squared outside of expected value \
-             by ``stdDevs`` standard deviations");
+             by ``stdDevsMeasured`` standard deviations");
 }
 
 shared suppressWarnings("deprecation")
-void testChiSquaredBits(Random random) {
+void testChiSquaredBits
+        (Random random, Float stdDevs) {
     for (bits in 10..smallest(63, runtime.integerAddressableSize)) {
-        value stdDevs = chiSquaredDeviations {
+        value stdDevsMeasured = chiSquaredDeviations {
             max = 2^bits - 1;
             buckets = 2^10;
             samples = random.bits(bits)
                 .take(2^10 * 5);
         };
-        assertTrue(stdDevs.magnitude < 3.890592,
+        assertTrue(stdDevsMeasured.magnitude < stdDevs,
                 "chi squared outside of expected value \
-                 by ``stdDevs`` standard deviations");
+                 by ``stdDevsMeasured`` standard deviations");
     }
 
     // for the 64 bit test, only test the 63 most
     // significant digits to avoid sign issues,
     // which is fine; the lsb would be ignored anyway
     if (runtime.integerAddressableSize == 64) {
-        value stdDevs = chiSquaredDeviations {
+        value stdDevsMeasured = chiSquaredDeviations {
             max = 2^63 - 1;
             buckets = 2^10;
             samples = random.bits(64)
                 .map((i) => i.rightLogicalShift(1))
                 .take(2^10 * 5);
         };
-        assertTrue(stdDevs.magnitude < 3.890592,
+        assertTrue(stdDevsMeasured.magnitude < stdDevs,
                 "chi squared outside of expected value \
-                 by ``stdDevs`` standard deviations");
+                 by ``stdDevsMeasured`` standard deviations");
     }
 }
 
