@@ -98,23 +98,19 @@ Float chiSquaredDeviations(
         (mean - chiSquared(max, buckets, samples)) / stdDev;
 
 Boolean realInts = runtime.integerAddressableSize == 64;
-Float impreciseFloat(Integer|Float i) {
-    // TODO implement as expression; remove workaround for
-    // https://github.com/ceylon/ceylon-js/issues/531
-    if (is Float i) {
-        return i;
-    }
-    else if (realInts
+
+shared
+Float impreciseFloat(Integer|Float i)
+    =>  if (is Float i) then
+            i
+        else if (realInts
                 && (i >= 9007199254740992 ||
-                    i <= -9007199254740992)) {
-        return (i / 9007199254740992).float
+                    i <= -9007199254740992)) then
+            (i / 9007199254740992).float
                 * 9007199254740992
-                + i % 9007199254740992;
-    }
-    else {
-        return i.float;
-    }
-}
+                + i % 9007199254740992
+        else
+            i.float;
 
 shared
 [Float, Float]? meanAndVarianceStdDevs(max, uniformSamples) {
