@@ -74,30 +74,30 @@ shared interface Random {
         return element;
     }
 
-    shared deprecated("experimental")
+    shared
     InfiniteStream<Integer> bits
             (Integer bits)
         =>  stream(() => nextBits(bits));
 
-    shared deprecated("experimental")
+    shared
     InfiniteStream<Integer> integers(
             "The upper bound (exclusive)."
             Integer bound)
         =>  stream(() => nextInteger(bound));
 
-    shared deprecated("experimental")
+    shared
     InfiniteStream<Boolean> booleans
         =>  stream(nextBoolean);
 
-    shared deprecated("experimental")
+    shared
     InfiniteStream<Byte> bytes
         =>  stream(nextByte);
 
-    shared deprecated("experimental")
+    shared
     InfiniteStream<Float> floats
         =>  stream(nextFloat);
 
-    shared deprecated("experimental")
+    shared
     InfiniteStream<Element|Absent> elements<Element, Absent>
             (Iterable<Element, Absent> elements)
             given Absent satisfies Null

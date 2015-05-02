@@ -7,7 +7,7 @@ import com.vasileff.ceylon.random.api {
     Random
 }
 
-shared suppressWarnings("deprecation")
+shared
 void testRange(Random random) {
 
     // don't check 64 bit random numbers, which produce negative integers
@@ -32,7 +32,7 @@ void testRange(Random random) {
     }
 }
 
-shared suppressWarnings("deprecation")
+shared
 void testAverageAndVarianceOfIntegers
         (Random random, Float stdDevs) {
     void test(Integer bound) {
@@ -53,12 +53,12 @@ void testAverageAndVarianceOfIntegers
     }
 }
 
-shared suppressWarnings("deprecation")
+shared
 void testAverageAndVarianceOfFloats
         (Random random, Float stdDevs)
     =>  testAverageAndVariance(1.0, random.floats.take(1k), stdDevs);
 
-shared suppressWarnings("deprecation")
+shared
 void testAverageAndVarianceOfBytes
         (Random random, Float stdDevs) {
     value bytes = random.bytes;
@@ -116,7 +116,7 @@ Float chiSquaredDeviationsBytes(
                 .map(Byte.unsigned).take(count);
         };
 
-shared suppressWarnings("deprecation")
+shared
 void testChiSquaredBytes
         (Random random, Float stdDevs, String? description = null) {
     value stdDevsMeasured = chiSquaredDeviationsBytes(random.bytes);
@@ -129,7 +129,7 @@ void testChiSquaredBytes
             + desc);
 }
 
-shared suppressWarnings("deprecation")
+shared
 Float chiSquaredBits(Random random, Integer bits)
     =>  if (bits < 64) then
             chiSquaredDeviations {
