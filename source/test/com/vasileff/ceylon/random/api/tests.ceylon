@@ -75,18 +75,6 @@ void testAverageAndVarianceOfBytes
 }
 
 shared
-void testAverageAndVarianceOfBooleans
-        (Random random, Float stdDevs) {
-    // don't use just 1 boolean per sample; 0..1 range
-    // is too small for variance test
-    testAverageAndVariance(65535.0,
-            bitsFromBooleans(random, 16)
-                    .map(impreciseFloat)
-                    .take(1k),
-                    stdDevs);
-}
-
-shared
 void testAverageAndVariance(max, uniformSamples, stdDevs) {
     "upper bound, inclusive"
     Float max;
@@ -135,24 +123,6 @@ void testChiSquaredBytes
             + desc);
 }
 
-shared
-Float chiSquaredBooleans(Random random)
-    =>  chiSquaredDeviations {
-            max = 2^16 - 1;
-            buckets = 2^10;
-            samples = bitsFromBooleans(random, 16)
-                .take(2^10 * 5);
-        };
-
-shared
-void testChiSquaredBooleans
-        (Random random, Float stdDevs) {
-    value stdDevsMeasured = chiSquaredBooleans(random);
-    assertTrue(stdDevsMeasured.magnitude < stdDevs,
-            "chi squared outside of expected value \
-             by ``stdDevsMeasured`` standard deviations");
-}
-
 shared suppressWarnings("deprecation")
 Float chiSquaredBits(Random random, Integer bits)
     =>  if (bits < 64) then
@@ -184,13 +154,3 @@ void testChiSquaredBits(Random random, Float stdDevs) {
                  for nextBits(``bits``)");
     }
 }
-
-suppressWarnings("deprecation")
-{Integer*} bitsFromBooleans(Random random, Integer bits)
-    =>  stream(() {
-            variable value result = 0;
-            for (bit in 0:bits) {
-                result = result.set(bit, random.nextBoolean());
-            }
-            return result;
-        });

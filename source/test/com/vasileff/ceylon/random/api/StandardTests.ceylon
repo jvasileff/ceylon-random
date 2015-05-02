@@ -40,8 +40,10 @@ class StandardTests(
 
     test shared
     void testAverageAndVarianceOfBooleans()
-        =>  package.testAverageAndVarianceOfBooleans(
-                factory(), stdDevs);
+        =>  package.testAverageAndVarianceOfBytes(
+                BooleanBackedRandom(
+                    random().nextBoolean),
+                    stdDevs);
 
     test shared
     void testChiSquaredBytes()
@@ -50,8 +52,10 @@ class StandardTests(
 
     test shared
     void testChiSquaredBooleans()
-        =>  package.testChiSquaredBooleans(
-                factory(), stdDevs);
+        =>  package.testChiSquaredBytes(
+                BooleanBackedRandom(
+                    random().nextBoolean),
+                    stdDevs);
 
     test shared
     void testChiSquaredBits()
