@@ -17,6 +17,8 @@ class StandardTests(
          deviations, expected failure rate is 1 in 10k."
         Float stdDevs = 3.890592) {
 
+    function factory() => RangeCheckingRandom(random());
+
     test shared
     void testRange()
         =>  package.testRange(random());
@@ -24,37 +26,37 @@ class StandardTests(
     test shared
     void testAverageAndVarianceOfIntegers()
         =>  package.testAverageAndVarianceOfIntegers(
-                RangeCheckingRandom(random()), stdDevs);
+                factory(), stdDevs);
 
     test shared
     void testAverageAndVarianceOfFloats()
         =>  package.testAverageAndVarianceOfFloats(
-                RangeCheckingRandom(random()), stdDevs);
+                factory(), stdDevs);
 
     test shared
     void testAverageAndVarianceOfBytes()
         =>  package.testAverageAndVarianceOfBytes(
-                RangeCheckingRandom(random()), stdDevs);
+                factory(), stdDevs);
 
     test shared
     void testAverageAndVarianceOfBooleans()
         =>  package.testAverageAndVarianceOfBooleans(
-                RangeCheckingRandom(random()), stdDevs);
+                factory(), stdDevs);
 
     test shared
     void testChiSquaredBytes()
         =>  package.testChiSquaredBytes(
-                RangeCheckingRandom(random()), stdDevs);
+                factory(), stdDevs);
 
     test shared
     void testChiSquaredBooleans()
         =>  package.testChiSquaredBooleans(
-                RangeCheckingRandom(random()), stdDevs);
+                factory(), stdDevs);
 
     test shared
     void testChiSquaredBits()
         =>  package.testChiSquaredBits(
-                RangeCheckingRandom(random()), stdDevs);
+                factory(), stdDevs);
 
     test shared
     void testChiSquaredBitRanges() {
