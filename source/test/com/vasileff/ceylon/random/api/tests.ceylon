@@ -4,8 +4,7 @@ import ceylon.test {
 
 import com.vasileff.ceylon.random.api {
     randomLimits,
-    Random,
-    stream
+    Random
 }
 
 shared suppressWarnings("deprecation")
@@ -101,19 +100,26 @@ void testAverageAndVariance(max, uniformSamples, stdDevs) {
              standard deviations");
 }
 
-shared suppressWarnings("deprecation")
-Float chiSquaredBytes(Random random)
+shared
+Float chiSquaredDeviationsBytes(
+        "Bytes to test; should have at
+         least [[count]] elements"
+        {Byte*} uniformSamples,
+        "Number of buckets"
+        Integer buckets = 256,
+        "Maximum number of samples to test"
+        Integer count = buckets * 5)
     =>  chiSquaredDeviations {
             max = 255;
-            buckets = 256;
-            samples = random.bytes
-                .map(Byte.unsigned).take(256*5);
+            buckets = buckets;
+            samples = uniformSamples
+                .map(Byte.unsigned).take(count);
         };
 
-shared
+shared suppressWarnings("deprecation")
 void testChiSquaredBytes
         (Random random, Float stdDevs, String? description = null) {
-    value stdDevsMeasured = chiSquaredBytes(random);
+    value stdDevsMeasured = chiSquaredDeviationsBytes(random.bytes);
     value desc = if (exists description)
                  then "; " + description
                  else "";
