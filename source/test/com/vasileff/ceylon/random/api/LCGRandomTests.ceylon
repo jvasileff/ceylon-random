@@ -3,4 +3,6 @@ import com.vasileff.ceylon.random.api {
 }
 
 shared
-class LCGRandomTests() extends StandardTests(LCGRandom) {}
+class LCGRandomTests() extends StandardTests(
+        LCGRandom,
+        if (realInts) then 32 else 15) {}

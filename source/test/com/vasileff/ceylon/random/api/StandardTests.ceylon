@@ -1,13 +1,17 @@
-import com.vasileff.ceylon.random.api {
-    Random
-}
 import ceylon.test {
     test
+}
+
+import com.vasileff.ceylon.random.api {
+    Random
 }
 
 shared abstract
 class StandardTests(
         Random() random,
+        "Number of random bits produced per iteration of the
+         underlying random number generator."
+        Integer baseBitLength,
         "Allowable number of standard devations from expected
          value for each iteration of each test; with 3.89 std
          deviations, expected failure rate is 1 in 10k."
@@ -51,4 +55,16 @@ class StandardTests(
     void testChiSquaredBits()
         =>  package.testChiSquaredBits(
                 RangeCheckingRandom(random()), stdDevs);
+
+    test shared
+    void testChiSquaredBitRanges() {
+        for (i in 0:baseBitLength - 8) {
+            package.testChiSquaredBytes(
+                RangeCheckingRandom(
+                    BitMappingRandom(
+                        random(),
+                        baseBitLength, i, 8)),
+                stdDevs);
+        }
+    }
 }

@@ -124,11 +124,15 @@ Float chiSquaredBytes(Random random)
 
 shared
 void testChiSquaredBytes
-        (Random random, Float stdDevs) {
+        (Random random, Float stdDevs, String? description = null) {
     value stdDevsMeasured = chiSquaredBytes(random);
+    value desc = if (exists description)
+                 then "; " + description
+                 else "";
     assertTrue(stdDevsMeasured.magnitude < stdDevs,
             "chi squared outside of expected value \
-             by ``stdDevsMeasured`` standard deviations");
+             by ``stdDevsMeasured`` standard deviations"
+            + desc);
 }
 
 shared
