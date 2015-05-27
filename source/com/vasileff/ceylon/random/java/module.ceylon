@@ -1,5 +1,6 @@
 license("http://opensource.org/licenses/MIT")
 by("John Vasileff")
+native("jvm")
 module com.vasileff.ceylon.random.java "0.0.5-SNAPSHOT" {
     shared import java.base "7";
     shared import ceylon.math "1.1.1";
