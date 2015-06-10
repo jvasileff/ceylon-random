@@ -17,7 +17,9 @@ class BooleanBackedRandom(
         else {
             variable value result = 0;
             for (bit in 0:bits) {
-                result = result.set(bit, generate());
+                result *= 2;
+                result += if (generate())
+                          then 1 else 0;
             }
             return result;
         }
