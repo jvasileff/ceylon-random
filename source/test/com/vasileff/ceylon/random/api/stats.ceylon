@@ -70,7 +70,7 @@ Float chiSquared(
     value floats = if (is {Float*} samples)
                    then samples
                    else samples.map(impreciseFloat);
-    value counts = Array.OfSize(buckets, 0);
+    value counts = Array.ofSize(buckets, 0);
     value lastIndex = buckets - 1;
     variable value sampleCount = 0;
     for (x in floats) {
