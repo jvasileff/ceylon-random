@@ -7,21 +7,9 @@
 shared native
 Random platformRandom();
 
-"Returns an instance of [[Random]] backed by a platform
- specific random number generator.
-
- For the JVM, this function returns a new [[LCGRandom]]
- instance. For the JavaScript VM, a [[Random]] that uses
- `Math.random()` for random values is returned."
 shared native("jvm")
 Random platformRandom() => LCGRandom();
 
-"Returns an instance of [[Random]] backed by a platform
- specific random number generator.
-
- For the JVM, this function returns a new [[LCGRandom]]
- instance. For the JavaScript VM, a [[Random]] that uses
- `Math.random()` for random values is returned."
 shared native("js")
 Random platformRandom() => object
         satisfies Random {
