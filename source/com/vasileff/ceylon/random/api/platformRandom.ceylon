@@ -27,11 +27,13 @@ Random platformRandom() => object
         satisfies Random {
 
     value two32 = 2^32;
-    value two53 = 2^53;
 
-    Integer next("must be in 1..32" Integer bits) {
+    Integer next(bits) {
+        "must be in 1..32; lower 21 bits are 0 on some JS VMs."
+        Integer bits;
+
         dynamic {
-            return (Math.random() * two53).integer / 2^(53 - bits);
+            return (Math.random() * 2^bits).integer;
         }
     }
 
