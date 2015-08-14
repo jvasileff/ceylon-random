@@ -1,14 +1,35 @@
+import java.util {
+    JRandom=Random
+}
+
 "Returns an instance of [[Random]] backed by a platform
  specific random number generator.
 
- For the JVM, this function returns a new [[LCGRandom]]
- instance. For the JavaScript VM, a [[Random]] that uses
- `Math.random()` for random values is returned."
+ For the JVM, this function returns a [[Random]] that
+ uses `java.util.Random` for random values.
+
+ For the JavaScript VM, this function returns a [[Random]]
+ that uses `Math.random()` for random values."
 shared native
 Random platformRandom();
 
 shared native("jvm")
-Random platformRandom() => LCGRandom();
+Random platformRandom() => object
+        satisfies Random {
+
+    "The backing delegate."
+    JRandom delegate = JRandom();
+
+    shared actual Integer nextBits(Integer bits) {
+        if (bits == 0) {
+            return 0;
+        } else if (bits < 31) {
+            return delegate.nextInt(2 ^ bits);
+        } else {
+            return delegate.nextLong().rightLogicalShift(64 - bits);
+        }
+    }
+};
 
 shared native("js")
 Random platformRandom() => object
