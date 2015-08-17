@@ -1,10 +1,3 @@
-import com.vasileff.ceylon.xmath.float {
-    sum
-}
-import com.vasileff.ceylon.xmath.integer {
-    smallest
-}
-
 shared
 Float|Absent average<Absent>(
         Iterable<Float|Integer, Absent> xs)
@@ -82,8 +75,8 @@ Float chiSquared(
         sampleCount++;
     }
     value expected = sampleCount.float / buckets;
-    return sum(*counts.map((count)
-        =>  (count.float - expected) ^ 2)) / expected;
+    return sum({0.0, *counts.map((count)
+        =>  (count.float - expected) ^ 2)}) / expected;
 }
 
 shared
