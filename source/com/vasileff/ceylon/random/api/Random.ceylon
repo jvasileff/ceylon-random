@@ -75,30 +75,30 @@ shared interface Random {
     }
 
     shared
-    InfiniteStream<Integer> bits
+    {Integer+} bits
             (Integer bits)
         =>  stream(() => nextBits(bits));
 
     shared
-    InfiniteStream<Integer> integers(
+    {Integer+} integers(
             "The upper bound (exclusive)."
             Integer bound)
         =>  stream(() => nextInteger(bound));
 
     shared
-    InfiniteStream<Boolean> booleans
+    {Boolean+} booleans
         =>  stream(nextBoolean);
 
     shared
-    InfiniteStream<Byte> bytes
+    {Byte+} bytes
         =>  stream(nextByte);
 
     shared
-    InfiniteStream<Float> floats
+    {Float+} floats
         =>  stream(nextFloat);
 
     shared
-    InfiniteStream<Element|Absent> elements<Element, Absent>
+    {Element|Absent+} elements<Element, Absent>
             (Iterable<Element, Absent> elements)
             given Absent satisfies Null
         =>  stream(() => nextElement(elements));
