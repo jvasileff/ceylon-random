@@ -60,9 +60,11 @@ shared interface Random {
     shared default Element|Absent
             nextElement<Element, Absent>
                 (Iterable<Element, Absent> stream)
+                given Element satisfies Object
                 given Absent satisfies Null {
         value size = stream.size;
-        if (size == 0, is Absent null) {
+        if (size == 0) {
+            assert (is Absent null);
             return null;
         }
         else if (size < 1) {
@@ -97,11 +99,24 @@ shared interface Random {
     {Float+} floats
         =>  stream(nextFloat);
 
+    "Returns an infinite stream of random elements from the given [[stream]]. The stream
+     is eagerly evaluated a single time using [[Iterable.sequence]], with random elements
+     being selected from the result of that evaluation.
+
+     The result will be empty if the provided [[stream]] is empty."
     shared
-    {Element|Absent+} elements<Element, Absent>
-            (Iterable<Element, Absent> elements)
-            given Absent satisfies Null
-        =>  stream(() => nextElement(elements));
+    Iterable<Element, Absent> elements<Element, Absent>
+            (Iterable<Element, Absent> stream)
+            given Element satisfies Object
+            given Absent satisfies Null {
+
+        value elements = stream.sequence();
+        if (!nonempty elements) {
+            assert (is Iterable<Element, Absent> elements);
+            return elements;
+        }
+        return package.stream(() => nextElement(elements));
+    }
 }
 
 Float floatUnit = 1.0 / 2^53; // avoid left shift on JS

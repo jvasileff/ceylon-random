@@ -42,8 +42,9 @@ class RangeCheckingRandom
     }
 
     shared actual
-    Element|Absent nextElement<Element, Absent>
+    Element|Absent nextElement<Element, Absent=Null>
             (Iterable<Element, Absent> stream)
+            given Element satisfies Object
             given Absent satisfies Null
         =>  delegate.nextElement(stream);
 }
