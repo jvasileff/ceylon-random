@@ -15,16 +15,18 @@ shared interface Random {
      Note that `bits` may not be greater than [[randomLimits.maxBits]]."
     throws(`class Exception`,
            "if [[bits]] is greater than [[randomLimits.maxBits]].")
-    shared formal Integer nextBits(
+    shared formal see(`function Random.bits`)
+    Integer nextBits(
             "The number of psuedorandom bits to generate"
             Integer bits);
 
-    "Returns the next pseudorandom `Integer` between `0` (inclusive)
+    "Returns the next pseudorandom [[Integer]] between `0` (inclusive)
      and [[bound]] (exclusive)."
     throws (`class Exception`,
         "if [[bound]] is less than `1` or greater \
          than [[randomLimits.maxIntegerBound]]")
-    shared default Integer nextInteger(
+    shared default see(`function integers`)
+    Integer nextInteger(
             "The upper bound (exclusive)."
             Integer bound) {
         if (bound < 1 || bound > randomLimits.maxIntegerBound) {
@@ -42,23 +44,26 @@ shared interface Random {
         }
     }
 
-    "Returns the next pseudorandom `Boolean`."
-    shared default Boolean nextBoolean()
-        => nextBits(1) == 1;
+    "Returns the next pseudorandom [[Boolean]]."
+    shared default see(`value booleans`)
+    Boolean nextBoolean()
+        =>  nextBits(1) == 1;
 
-    "Returns the next pseudorandom `Byte`."
-    shared default Byte nextByte()
-        => nextBits(8).byte;
+    "Returns the next pseudorandom [[Byte]]."
+    shared default see(`value bytes`)
+    Byte nextByte()
+        =>  nextBits(8).byte;
 
-    "Returns the next pseudorandom `Float` between `0.0` and `1.0`."
-    shared default Float nextFloat()
-        => nextBits(53).float * floatUnit;
+    "Returns the next pseudorandom [[Float]] between `0.0` and `1.0`."
+    shared default see(`value floats`)
+    Float nextFloat()
+        =>  nextBits(53).float * floatUnit;
 
     "Returns a random element from the supplied [[Iterable]]. Useful
      argument types include [[Sequence]]s, such as `[\"heads\", \"tails\"]`,
      and [[Range]]s, such as `[1:100]` or `['A'..'Z']`."
-    shared default Element|Absent
-            nextElement<Element, Absent>
+    shared default see(`function elements`)
+    Element|Absent nextElement<Element, Absent>
                 (Iterable<Element, Absent> stream)
                 given Element satisfies Object
                 given Absent satisfies Null {
@@ -76,26 +81,31 @@ shared interface Random {
         return element;
     }
 
-    shared
-    {Integer+} bits
-            (Integer bits)
+    "Return an infinite stream of [[Integer]]s holding `bits` pseudorandom bits."
+    shared see(`function nextBits`)
+    {Integer+} bits(Integer bits)
         =>  stream(() => nextBits(bits));
 
-    shared
+    "Return an infinite stream of pseudorandom [[Integer]]s between `0` (inclusive)
+     and [[bound]] (exclusive)."
+    shared see(`function nextInteger`)
     {Integer+} integers(
             "The upper bound (exclusive)."
             Integer bound)
         =>  stream(() => nextInteger(bound));
 
-    shared
+    "Return an infinite stream of pseudorandom [[Boolean]]s."
+    shared see(`function nextBoolean`)
     {Boolean+} booleans
         =>  stream(nextBoolean);
 
-    shared
+    "Return an infinite stream of pseudorandom [[Byte]]s."
+    shared see(`function nextByte`)
     {Byte+} bytes
         =>  stream(nextByte);
 
-    shared
+    "Return an infinite stream of pseudorandom [[Float]]s."
+    shared see(`function nextFloat`)
     {Float+} floats
         =>  stream(nextFloat);
 
@@ -104,7 +114,7 @@ shared interface Random {
      being selected from the result of that evaluation.
 
      The result will be empty if the provided [[stream]] is empty."
-    shared
+    shared see(`function nextElement`)
     Iterable<Element, Absent> elements<Element, Absent>
             (Iterable<Element, Absent> stream)
             given Element satisfies Object
