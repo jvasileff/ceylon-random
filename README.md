@@ -1,7 +1,16 @@
 ceylon-random
 =============
 
-Random Number Generator API for Ceylon
+Ceylon Random provides pseudorandom number generators for Ceylon on both the JVM and
+JavaScript virtual machine, as well as an easy to use API for use by third party random
+number generators. Two modules are available:
+
+The **api** module provides the main `Random` interface, the default `LCGRandom`
+pseudorandom number generator, and access to platform default random number generators.
+
+The **java** module provides JVM specific functionality including `JavaRandomAdapter` to
+wrap `java.util.Random` generators, and `randomWhole()` and `randomWholeBits()` utility
+functions for use with `ceylon.math.whole`.
 
 ## Module Documentation
 
@@ -19,15 +28,6 @@ import com.vasileff.ceylon.random.api "0.0.5";
 import com.vasileff.ceylon.random.java "0.0.5";
 ```
 
-The `api` module provides the main `Random` interface and related functions
-along with a default implementation, `LCGRandom`. The `api` module is available
-for both the Java Virtual Machine and the JavaScript Virtual Machine.
-
-The `java` module provides easy to use wrappers for `java.util.Random` and
-`java.util.SecureRandom` (`JavaRandom` and `JavaSecureRandom`), as well as an
-adapter that can be used for instances of any subclass of `java.util.Random`
-(`JavaRandomAdapter`).
-
 ## Usage Examples
 
 Creating and using the default random number generator is easy:
@@ -42,10 +42,10 @@ shared void run() {
 }
 ```
 
-Other simple methods include `nextBits`, `nextInteger`, `nextBoolean`, and
-`nextByte`.
+Other simple methods include `nextBits()`, `nextBoolean()`, `nextByte()`, and
+`nextInteger()`.
 
-More convenient is `nextElement`, which can be used to generate a random number
+More convenient is `nextElement()`, which can be used to generate a random number
 within a `Range`:
 
 ```ceylon
@@ -53,29 +53,26 @@ print(random.nextElement(1..100));
 // Sample output: 27
 ```
 
-or select a random element from a sequence:
+or select a random element from a `Sequence`:
 
 ```ceylon
 print(random.nextElement(["heads", "tails"]));
 // Sample output: heads
 ```
 
-or from any other `Iterable` with fewer than `runtime.maxIntegerValue`
-elements.
+It is also possible to obtain an infinite stream of random values using corresponding
+functions `bits()`, `booleans()`, `bytes()`, `elements()`, `floats()`, and `integers()`.
 
-One interesting usage is to create a random stream of elements. For example, to
+For example, to
 simulate multiple rolls of a die:
 
 ```ceylon
-function dieRoll() => random.nextElement([*('⚀':6)]);
-value diceStream = { dieRoll() }.cycled;
+value diceStream => random.elements([*('⚀':6)]);
 print(diceStream.take(10));
 // Sample output: { ⚂, ⚀, ⚀, ⚂, ⚀, ⚅, ⚁, ⚅, ⚅, ⚁ }
 ```
 
-
-Finally, `randomize` and `randomizeInPlace` can be used to shuffle a list. For
-example, to deal a hand of poker:
+Finally, `randomize()` and `randomizeInPlace()` can be used to shuffle a list:
 
 ```ceylon
 print(randomize {
@@ -92,6 +89,19 @@ print(randomize {
 ### v0.0.5
 
 - Compiled for Ceylon 1.2.0
+- Added utility methods that return infinite streams of random values.
+- Added `platformRandom()` that returns a `Random` instance that uses the platform
+  default random number generator. On the JVM, `java.util.Random` is used as the backing
+  generator, and on the JavaScript VM, `Math.random()`.
+- Added `platformSecureRandom()` that returns a `Random` instance that uses the platform
+  default *secure* random number generator, if available. On the JVM,
+  `java.util.SecureRandom` is used as the backing generator. `null` is currently returned
+  on the JavaScript VM.
+- Changed `Random.nextElement(Iterable)` to require the `Iterable`s element type to
+  be non-`Null` (**breaking change**)
+- Significantly improved testing for quality of the included pseudorandom number
+  generators.
+- Introduced experimental `InfiniteStream` and `InfiniteIterator` utility interfaces.  
 
 ### v0.0.4
 
