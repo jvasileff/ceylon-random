@@ -1,25 +1,23 @@
 ceylon-random
 =============
 
-Ceylon Random provides pseudorandom number generators for Ceylon on both the JVM and
-JavaScript virtual machine, as well as an easy to use API for use by third party random
-number generators. Two modules are available:
+Ceylon Random provides pseudorandom number generators for
+[Ceylon](http://ceylon-lang.org) on both the Java and JavaScript virtual
+machines, as well as an easy to use API for use by third party random number
+generators. Two modules are available:
 
-The **api** module provides the main `Random` interface, the default `LCGRandom`
-pseudorandom number generator, and access to platform default random number generators.
+- The [**api** module](https://modules.ceylon-lang.org/repo/1/com/vasileff/ceylon/random/api/0.0.5/module-doc/api/index.html)
+  provides the main `Random` interface, the default `LCGRandom` pseudorandom
+  number generator, and access to platform default random number generators.
 
-The **java** module provides JVM specific functionality including `JavaRandomAdapter` to
-wrap `java.util.Random` generators, and `randomWhole()` and `randomWholeBits()` utility
-functions for use with `ceylon.math.whole`.
-
-## Module Documentation
-
-- [com.vasileff.ceylon.random.api](https://modules.ceylon-lang.org/repo/1/com/vasileff/ceylon/random/api/0.0.5/module-doc/api/index.html)
-- [com.vasileff.ceylon.random.java](https://modules.ceylon-lang.org/repo/1/com/vasileff/ceylon/random/java/0.0.5/module-doc/api/index.html)
+- The [**java** module](https://modules.ceylon-lang.org/repo/1/com/vasileff/ceylon/random/java/0.0.5/module-doc/api/index.html)
+  provides JVM specific functionality including `JavaRandomAdapter` to wrap
+  `java.util.Random` generators, and `randomWhole()` and `randomWholeBits()`
+  utility functions for use with `ceylon.math.whole`.
 
 ## Getting Started
 
-These modules are available on [Ceylon Herd](https://modules.ceylon-lang.org),
+These modules are available on [Ceylon Herd](http://modules.ceylon-lang.org/modules/com.vasileff.ceylon.random.api),
 which is automatically enabled by the Ceylon build tool. Simply add one or both
 of the following to your module's `module.ceylon`:
 
