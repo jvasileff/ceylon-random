@@ -45,17 +45,17 @@ shared interface Random {
     }
 
     "Returns the next pseudorandom [[Boolean]]."
-    shared default see(`value booleans`)
+    shared default see(`function booleans`)
     Boolean nextBoolean()
         =>  nextBits(1) == 1;
 
     "Returns the next pseudorandom [[Byte]]."
-    shared default see(`value bytes`)
+    shared default see(`function bytes`)
     Byte nextByte()
         =>  nextBits(8).byte;
 
     "Returns the next pseudorandom [[Float]] between `0.0` and `1.0`."
-    shared default see(`value floats`)
+    shared default see(`function floats`)
     Float nextFloat()
         =>  nextBits(53).float * floatUnit;
 
@@ -96,17 +96,17 @@ shared interface Random {
 
     "Return an infinite stream of pseudorandom [[Boolean]]s."
     shared see(`function nextBoolean`)
-    {Boolean+} booleans
+    {Boolean+} booleans()
         =>  stream(nextBoolean);
 
     "Return an infinite stream of pseudorandom [[Byte]]s."
     shared see(`function nextByte`)
-    {Byte+} bytes
+    {Byte+} bytes()
         =>  stream(nextByte);
 
     "Return an infinite stream of pseudorandom [[Float]]s."
     shared see(`function nextFloat`)
-    {Float+} floats
+    {Float+} floats()
         =>  stream(nextFloat);
 
     "Returns an infinite stream of random elements from the given [[stream]]. The stream

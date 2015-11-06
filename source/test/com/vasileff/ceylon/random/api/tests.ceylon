@@ -56,12 +56,12 @@ void testAverageAndVarianceOfIntegers
 shared
 void testAverageAndVarianceOfFloats
         (Random random, Float stdDevs)
-    =>  testAverageAndVariance(1.0, random.floats.take(1k), stdDevs);
+    =>  testAverageAndVariance(1.0, random.floats().take(1k), stdDevs);
 
 shared
 void testAverageAndVarianceOfBytes
         (Random random, Float stdDevs) {
-    value bytes = random.bytes;
+    value bytes = random.bytes();
     value twoBytes = zipPairs(bytes, bytes).map((pair)
         =>  let ([a, b] = pair)
             a.unsigned
@@ -119,7 +119,7 @@ Float chiSquaredDeviationsBytes(
 shared
 void testChiSquaredBytes
         (Random random, Float stdDevs, String? description = null) {
-    value stdDevsMeasured = chiSquaredDeviationsBytes(random.bytes);
+    value stdDevsMeasured = chiSquaredDeviationsBytes(random.bytes());
     value desc = if (exists description)
                  then "; " + description
                  else "";
