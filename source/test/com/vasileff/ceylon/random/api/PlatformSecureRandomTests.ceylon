@@ -2,8 +2,8 @@ import com.vasileff.ceylon.random.api {
     platformSecureRandom,
     Random
 }
-import ceylon.test.core {
-    IgnoreException
+import ceylon.test.engine {
+    TestSkippedException
 }
 
 shared
@@ -15,6 +15,6 @@ Random newSecureRandom() {
         return result;
     }
     else {
-        throw IgnoreException("Platform secure random not available");
+        throw TestSkippedException("Platform secure random not available");
     }
 }
