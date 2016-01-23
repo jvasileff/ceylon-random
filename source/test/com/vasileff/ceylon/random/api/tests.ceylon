@@ -37,9 +37,9 @@ void testAverageAndVarianceOfIntegers
         (Random random, Float stdDevs) {
     void test(Integer bound) {
         testAverageAndVariance(
-                impreciseFloat(bound - 1),
+                bound.nearestFloat - 1,
                 random.integers(bound)
-                      .map(impreciseFloat)
+                      .map(Integer.nearestFloat)
                       .take(1k),
                 stdDevs);
     }
@@ -69,7 +69,7 @@ void testAverageAndVarianceOfBytes
                 .or(b.unsigned));
 
     testAverageAndVariance(65535.0,
-        twoBytes.map(impreciseFloat).take(1k),
+        twoBytes.map(Integer.nearestFloat).take(1k),
         stdDevs);
 }
 

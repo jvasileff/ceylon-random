@@ -73,4 +73,19 @@ class StandardTests(
                 stdDevs);
         }
     }
+
+    shared
+    void runTests() {
+        executeTests([
+            "testRange" -> testRange,
+            "testAverageAndVarianceOfIntegers" -> testAverageAndVarianceOfIntegers,
+            "testAverageAndVarianceOfFloats" -> testAverageAndVarianceOfFloats,
+            "testAverageAndVarianceOfBytes" -> testAverageAndVarianceOfBytes,
+            "testAverageAndVarianceOfBooleans" -> testAverageAndVarianceOfBooleans,
+            "testChiSquaredBytes" -> testChiSquaredBytes,
+            "testChiSquaredBooleans" -> testChiSquaredBooleans,
+            "testChiSquaredBits" -> testChiSquaredBits,
+            "testChiSquaredBitRanges" -> testChiSquaredBitRanges
+        ]);
+    }
 }

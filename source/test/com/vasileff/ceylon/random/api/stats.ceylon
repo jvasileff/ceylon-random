@@ -9,9 +9,7 @@ Float|Absent average<Absent>(
     variable value sum = 0.0;
     variable value count = 0;
 
-    value floats = if (is {Float*} xs)
-                   then xs
-                   else xs.map(impreciseFloat);
+    value floats = xs.map(nearestFloat);
 
     for (x in floats) {
         count++;
@@ -35,9 +33,7 @@ shared
     variable value m = 0.0;
     variable value s = 0.0;
 
-    value floats = if (is {Float*} xs)
-                   then xs
-                   else xs.map(impreciseFloat);
+    value floats = xs.map(nearestFloat);
 
     // Welford’s method
     for (x in floats) {
@@ -59,10 +55,8 @@ Float chiSquared(
         "`samples.count` should be greater than or equal to `5 * buckets`."
         {<Integer|Float>*} samples) {
 
-    value maxFloat = impreciseFloat(max);
-    value floats = if (is {Float*} samples)
-                   then samples
-                   else samples.map(impreciseFloat);
+    value maxFloat = nearestFloat(max);
+    value floats = samples.map(nearestFloat);
     value counts = Array.ofSize(buckets, 0);
     value lastIndex = buckets - 1;
     variable value sampleCount = 0;
@@ -93,17 +87,10 @@ Float chiSquaredDeviations(
 Boolean realInts = runtime.integerAddressableSize == 64;
 
 shared
-Float impreciseFloat(Integer|Float i)
-    =>  if (is Float i) then
-            i
-        else if (realInts
-                && (i >= 9007199254740992 ||
-                    i <= -9007199254740992)) then
-            (i / 9007199254740992).float
-                * 9007199254740992
-                + i % 9007199254740992
-        else
-            i.float;
+Float nearestFloat(Integer | Float x)
+    =>  switch (x)
+        case (is Float) x
+        case (is Integer) x.nearestFloat;
 
 shared
 [Float, Float]? meanAndVarianceStdDevs(max, uniformSamples) {
@@ -133,8 +120,8 @@ shared
          See <http://en.wikipedia.org/wiki/Variance#Distribution_of_the_sample_variance>"
         value varianceOfSampleVariance =
                 let (n = count.float)
-                let (κ = -1.2)
-                uniformStdDev ^ 4 * (2 / (n - 1) + κ / n );
+                let (k = -1.2)
+                uniformStdDev ^ 4 * (2 / (n - 1) + k / n );
         value stdDevOfSampleVariance = varianceOfSampleVariance ^ 0.5;
 
         // measured
