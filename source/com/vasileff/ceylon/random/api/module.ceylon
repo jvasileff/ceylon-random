@@ -1,16 +1,16 @@
 """
    Ceylon Random provides:
 
-    - a pseudorandom number generator ([[DefaultRandom]]),
+    - a pseudorandom number generator ([[LCGRandom]]),
     - toplevel utility functions to shuffle streams or arrays ([[randomize]]
       and [[randomizeInPlace]]), and
     - an easy to implement interface for use by third party random number generators
       ([[Random]]).
 
-   To generate random numbers, create and use an instance of [[DefaultRandom]]:
+   To generate random numbers, create and use an instance of [[LCGRandom]]:
 
        // Create a random number generator
-       value random = DefaultRandom();
+       value random = LCGRandom();
 
        // Print a pseudorandom Float in the range 0.0 to 1.0:
        print (random.nextFloat());
