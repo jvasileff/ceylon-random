@@ -1,4 +1,6 @@
 """
+   **Note:** this module has been deprecated. See `ceylon.random` for its replacement.
+
    Ceylon Random provides:
 
     - a pseudorandom number generator ([[LCGRandom]]),
@@ -50,6 +52,7 @@
 """
 license("http://opensource.org/licenses/MIT")
 by("John Vasileff")
+deprecated
 module com.vasileff.ceylon.random.api "0.0.6-SNAPSHOT" {
     native("jvm")
     import java.base "7";
