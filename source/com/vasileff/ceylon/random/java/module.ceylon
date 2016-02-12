@@ -4,9 +4,9 @@ license("http://opensource.org/licenses/MIT")
 by("John Vasileff")
 native("jvm")
 deprecated
-module com.vasileff.ceylon.random.java "0.0.6" {
+module com.vasileff.ceylon.random.java "0.0.7-SNAPSHOT" {
     shared import java.base "7";
     shared import ceylon.math "1.2.1";
-    shared import com.vasileff.ceylon.random.api "0.0.6";
+    shared import com.vasileff.ceylon.random.api "0.0.7-SNAPSHOT";
     import ceylon.interop.java "1.2.1";
 }
