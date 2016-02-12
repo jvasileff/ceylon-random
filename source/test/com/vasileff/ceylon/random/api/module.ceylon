@@ -1,4 +1,0 @@
-module test.com.vasileff.ceylon.random.api "0.0.7-SNAPSHOT" {
-    import ceylon.test "1.2.1";
-    shared import com.vasileff.ceylon.random.api "0.0.7-SNAPSHOT";
-}
