@@ -1,16 +1,16 @@
-import ceylon.math.whole {
+import ceylon.whole {
     Whole,
     one,
     zero,
     two
 }
 
-import com.vasileff.ceylon.random.api {
+import ceylon.random {
     Random,
-    LCGRandom
+    DefaultRandom
 }
 
-"Generate a pseudorandom [[ceylon.math.whole::Whole]] number in the range `origin`
+"Generate a pseudorandom [[ceylon.whole::Whole]] number in the range `origin`
  (inclusive) to `bound` (exclusive)."
 throws (`class Exception`, "if origin <= bound")
 shared Whole randomWhole(
@@ -19,7 +19,7 @@ shared Whole randomWhole(
         "The upper bound, exclusive. Must be greater than `origin`."
         Whole bound,
         "The entropy source."
-        Random random = LCGRandom()) {
+        Random random = DefaultRandom()) {
     value magnitude = bound - origin - one;
 
     if (magnitude.negative) {

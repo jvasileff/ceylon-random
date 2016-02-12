@@ -1,4 +1,4 @@
-import com.vasileff.ceylon.random.api {
+import ceylon.random {
     Random
 }
 
@@ -6,7 +6,7 @@ import java.util {
     JRandom=Random
 }
 
-"Adapts `java.util.Random` to [[com.vasileff.ceylon.random.api::Random]]."
+"Adapts `java.util.Random` to [[ceylon.random::Random]]."
 by("John Vasileff")
 shared class JavaRandomAdapter<Delegate>(delegate) satisfies Random
         given Delegate satisfies JRandom {
