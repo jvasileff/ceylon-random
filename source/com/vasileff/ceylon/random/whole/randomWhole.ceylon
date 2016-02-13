@@ -1,13 +1,11 @@
-import ceylon.whole {
-    Whole,
-    one,
-    zero,
-    two
-}
-
 import ceylon.random {
     Random,
     DefaultRandom
+}
+import ceylon.whole {
+    Whole,
+    one,
+    zero
 }
 
 "Generate a pseudorandom [[ceylon.whole::Whole]] number in the range `origin`
@@ -35,12 +33,11 @@ shared Whole randomWhole(
 }
 
 Integer bitLength(variable Whole number) {
-    // TODO use right shift when available, or Whole.bitLength
     assert(!number.negative);
     variable value bits = 0;
     while (number > zero) {
         bits++;
-        number /= two;
+        number = number.rightArithmeticShift(1);
     }
     return bits;
 }
