@@ -21,8 +21,7 @@ shared Whole randomWholeBits(
     variable Whole result = zero;
     while (bits > 0) {
         value x = smallest(bits, maxBits);
-        // TODO: use Whole.leftLogicalShift when available
-        result = result.timesInteger(2^x);
+        result = result.leftLogicalShift(x);
         result = result.plusInteger(random.nextBits(x));
         bits -= x;
     }
