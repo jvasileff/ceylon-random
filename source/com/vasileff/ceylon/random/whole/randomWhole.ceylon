@@ -4,8 +4,7 @@ import ceylon.random {
 }
 import ceylon.whole {
     Whole,
-    one,
-    zero
+    one
 }
 
 "Generate a pseudorandom [[ceylon.whole::Whole]] number in the range `origin`
@@ -35,7 +34,7 @@ shared Whole randomWhole(
 Integer bitLength(variable Whole number) {
     assert(!number.negative);
     variable value bits = 0;
-    while (number > zero) {
+    while (number.positive) {
         bits++;
         number = number.rightArithmeticShift(1);
     }

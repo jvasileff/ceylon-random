@@ -5,7 +5,6 @@ import ceylon.random {
 
 import com.vasileff.ceylon.integer64 {
     Integer64,
-    zero,
     one
 }
 
@@ -46,7 +45,7 @@ shared Integer64 randomInteger64(
 Integer bitLength(variable Integer64 number) {
     assert(!number.negative);
     variable value bits = 0;
-    while (number > zero) {
+    while (number.positive) {
         bits++;
         number = number.rightArithmeticShift(1);
     }
