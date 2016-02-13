@@ -1,3 +1,6 @@
+"""
+   This module provides [[java.util::Random]] to [[ceylon.random::Random]] adapters.
+"""
 license("http://opensource.org/licenses/MIT")
 by("John Vasileff")
 native("jvm")
