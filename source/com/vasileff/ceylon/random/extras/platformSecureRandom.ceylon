@@ -43,16 +43,36 @@ Integer()? nextIntegerNodeJS = (() {
         try {
             dynamic crypto = require("crypto");
             return () => crypto.pseudoRandomBytes(4).readUInt32BE();
-        } catch (err) {
+        } catch (Throwable _) {
             return null;
         }
     }
 })();
 
-// TODO https://developer.mozilla.org/en-US/docs/Web/API/RandomSource
+"See https://developer.mozilla.org/en-US/docs/Web/API/RandomSource"
+native("js")
+Integer()? nextIntegerWindowCrypto = (() {
+    dynamic {
+        if (!eval("typeof(window) === 'undefined'")) {
+             if (window.crypto?.getRandomValues exists) {
+                 return () {
+                    dynamic intArray = Uint32Array(1);
+                    window.crypto.getRandomValues(intArray);
+                    return intArray[0];
+                };
+            }
+        }
+        return null;
+    }
+})();
+
+native("js")
+Integer()? nextIntegerJS
+    =   nextIntegerNodeJS else nextIntegerWindowCrypto;
+
 shared native("js")
 Random? platformSecureRandom()
-        => if (exists nextIntegerNodeJS) then object
+        => if (exists nextIntegerJS) then object
         satisfies Random {
 
     value two32 = 2^32;
@@ -63,10 +83,10 @@ Random? platformSecureRandom()
 
         // don't risk returning a negative number
         if (bits == 32) {
-            return nextIntegerNodeJS();
+            return nextIntegerJS();
         }
         else {
-            return nextIntegerNodeJS().rightLogicalShift(32 - bits);
+            return nextIntegerJS().rightLogicalShift(32 - bits);
         }
     }
 
