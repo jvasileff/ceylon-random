@@ -5,6 +5,9 @@ import ceylon.random {
     Random,
     randomLimits
 }
+import dart.math {
+    DartRandom = Random_C
+}
 
 "Returns an instance of [[Random]] backed by a platform
  specific random number generator.
@@ -48,6 +51,41 @@ Random platformRandom() => object
         dynamic {
             return (Math.random() * 2^bits).integer;
         }
+    }
+
+    shared actual
+    Integer nextBits(Integer bits) {
+        if (bits <= 0) {
+            return 0;
+        }
+        else if (bits <= 32) {
+            return next(bits);
+        }
+        else if (bits <= 53) {
+            return next(bits - 32) * two32 + next(32);
+        }
+        else {
+            throw Exception(
+                "bits cannot be greater than \
+                 ``randomLimits.maxBits`` on this platform");
+        }
+    }
+};
+
+shared native("dart")
+Random platformRandom() => object
+        satisfies Random {
+
+    value two32 = 2^32;
+
+    value rng = DartRandom();
+
+    Integer next(bits) {
+        "must be in 1..32."
+        Integer bits;
+
+        value result = rng.nextInt(2^bits);
+        return result;
     }
 
     shared actual
