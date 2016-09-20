@@ -9,7 +9,7 @@
 """
 license("http://opensource.org/licenses/MIT")
 by("John Vasileff")
-module com.vasileff.ceylon.random.extras "1.0.3-SNAPSHOT" {
+module com.vasileff.ceylon.random.extras "1.0.3" {
     shared import ceylon.random "1.3.0";
     native("jvm") import java.base "7";
     native("dart") import dart.math "1.3.0";
