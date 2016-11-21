@@ -6,7 +6,7 @@ import ceylon.random {
     randomLimits
 }
 import dart.math {
-    DartRandom = Random_C
+    DartRandom = Random
 }
 
 "Returns an instance of [[Random]] backed by a platform
@@ -78,7 +78,7 @@ Random platformRandom() => object
 
     value two32 = 2^32;
 
-    value rng = DartRandom();
+    value rng = DartRandom.Class();
 
     Integer next(bits) {
         "must be in 1..32."
